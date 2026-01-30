@@ -22,10 +22,32 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 ## Pourquoi du JSONB ?
 
 Utile quand certaines propriétés :
-- varient beaucoup selon le type d’objet (produits, événements…)
+- varient beaucoup selon le type d'objet (produits, événements…)
 - changent souvent (schéma évolutif)
 
 On garde le **cœur** en colonnes SQL (requêtes, contraintes, index), et le "reste" en JSON.
+
+---
+
+## `json` vs `jsonb` (important)
+
+- `json` : stocke du texte JSON "tel quel" (peu utilisé en pratique)
+- `jsonb` : stocke une forme binaire optimisée (indexation, opérateurs, perf en lecture)
+
+Dans la majorité des cas : utilise **`jsonb`**.
+
+---
+
+## Quand *ne pas* utiliser JSONB ?
+
+Si un champ est :
+- filtré / trié en permanence
+- jointé (FK)
+- fortement contraint (CHECK/NOT NULL) et stable
+
+→ mets une **colonne SQL** classique.
+
+JSONB sert surtout pour des "extras" : metadata, attributs variables, payloads.
 
 ---
 
@@ -57,6 +79,28 @@ ORDER BY id;
 
 ---
 
+## Exemple 2 (NoSQL "léger") : metadata sur les commandes
+
+Sur une commande, on peut stocker des infos variables :
+- provider de paiement, coupon, ip, user-agent, source marketing…
+
+```sql
+ALTER TABLE orders
+ADD COLUMN IF NOT EXISTS metadata jsonb DEFAULT '{}'::jsonb;
+```
+
+---
+
+## Exemple : écrire une metadata (commande `paid`)
+
+```sql
+UPDATE orders
+SET metadata = metadata || '{"paymentProvider":"stripe","coupon":"WELCOME10"}'::jsonb
+WHERE id = 1;
+```
+
+---
+
 ## Écrire du JSON (`jsonb_build_object`, `jsonb_build_array`)
 
 ```sql
@@ -71,7 +115,7 @@ WHERE id = 6;
 
 ---
 
-## Modifier / ajouter une clé (merge)
+## Modifier / ajouter une clé (merge avec `||`)
 
 ```sql
 UPDATE products
@@ -82,7 +126,10 @@ WHERE id = 6;
 
 ---
 
-## Lire / extraire des valeurs
+## Lire / extraire des valeurs : `->` vs `->>`
+
+- `->` : extrait du JSON (type `jsonb`)
+- `->>` : extrait du texte (type `text`)
 
 ```sql
 SELECT
@@ -96,12 +143,144 @@ WHERE attributes IS NOT NULL;
 
 ---
 
-## Filtrer sur du JSON
+## Filtrer sur une clé JSON (simple)
 
 ```sql
 SELECT id, name
 FROM products
 WHERE attributes->>'color' = 'black';
+```
+
+---
+
+## Filtrer par "contenu" (opérateur `@>`)
+
+`@>` vérifie si un JSON contient un sous-document.
+
+```sql
+SELECT id, name
+FROM products
+WHERE attributes @> '{"material":"cotton"}'::jsonb;
+```
+
+---
+
+## Tester l'existence d'une clé : `?`
+
+```sql
+SELECT id, name
+FROM products
+WHERE attributes ? 'tags';
+```
+
+---
+
+## Aller chercher un champ "profond" : `#>>`
+
+Pour un chemin dans un document :
+
+```sql
+SELECT id, metadata #>> '{paymentProvider}' AS provider
+FROM orders;
+```
+
+`#>>` renvoie du texte (pratique pour filtrer/afficher).
+
+---
+
+## Récap extraction : `->`, `->>`, `#>`, `#>>`
+
+- `->` / `->>` : pour une clé (niveau 1)
+- `#>` / `#>>` : pour un chemin (niveau N)
+
+```sql
+SELECT
+  id,
+  attributes->'tags' AS tags_json,
+  attributes->>'color' AS color_text
+FROM products
+WHERE attributes IS NOT NULL;
+
+SELECT id, metadata#>>'{paymentProvider}' AS provider_text
+FROM orders;
+```
+
+---
+
+## Tableaux JSONB : "déplier" avec `jsonb_array_elements`
+
+Si tu as un tableau `tags` :
+
+```sql
+SELECT p.id, p.name, t.tag
+FROM products p
+CROSS JOIN LATERAL jsonb_array_elements_text(p.attributes->'tags') AS t(tag)
+WHERE p.attributes ? 'tags';
+```
+
+---
+
+## Tableaux JSONB : tester la présence d'une valeur
+
+Sur un tableau, `?` fonctionne aussi pour tester un élément string :
+
+```sql
+SELECT id, name
+FROM products
+WHERE attributes->'tags' ? 'cotton';
+```
+
+Alternative (pattern "contains" JSON) :
+
+```sql
+SELECT id, name
+FROM products
+WHERE attributes->'tags' @> '["cotton"]'::jsonb;
+```
+
+---
+
+## Mettre à jour une clé précisément : `jsonb_set`
+
+```sql
+UPDATE orders
+SET metadata = jsonb_set(metadata, '{coupon}', '"WELCOME10"', true)
+WHERE id = 1;
+```
+
+---
+
+## Mettre à jour une clé imbriquée : `jsonb_set` + chemin
+
+```sql
+UPDATE orders
+SET metadata = jsonb_set(
+  metadata,
+  '{tracking,source}',
+  '"instagram"',
+  true
+)
+WHERE id = 1;
+```
+
+Ici, `tracking` est un objet, et on crée `tracking.source` si absent.
+
+---
+
+## Supprimer une clé : opérateur `-`
+
+```sql
+UPDATE products
+SET attributes = attributes - 'size'
+WHERE id = 6;
+```
+
+Tu peux aussi supprimer plusieurs clés :
+
+```sql
+UPDATE products
+SET attributes = attributes - 'size' - 'color'
+WHERE id = 6;
 ```
 
 ---
@@ -132,7 +311,7 @@ GROUP BY o.id;
 
 ---
 
-## Indexer du JSON (optionnel)
+## Indexer du JSON (performance)
 
 2 approches courantes :
 
@@ -147,6 +326,47 @@ Index sur une clé précise (filtre fréquent) :
 ```sql
 CREATE INDEX idx_products_brand
 ON products ((attributes->>'brand'));
+```
+
+---
+
+## Index JSONB : lequel choisir ?
+
+- Si tu fais beaucoup de requêtes `attributes @> ...` → **GIN** sur `attributes`
+- Si tu filtres toujours sur la même clé (ex: `brand`, `color`) → index d'expression sur `(attributes->>'color')`
+
+Comme toujours : on indexe ce qu'on requête vraiment.
+
+---
+
+## Pattern "prod" : colonne générée pour une clé JSON fréquente
+
+Si tu filtres **tout le temps** sur la même clé JSON, une colonne générée est pratique :
+
+```sql
+ALTER TABLE orders
+ADD COLUMN payment_provider TEXT
+GENERATED ALWAYS AS (metadata->>'paymentProvider') STORED;
+
+CREATE INDEX idx_orders_payment_provider
+ON orders (payment_provider);
+```
+
+Tu gardes la flexibilité de `metadata`, mais tu rends la clé "principale" simple à indexer/req.
+
+---
+
+## Un minimum de "validation" avec `CHECK` (simple)
+
+Tu peux imposer une règle sur une clé JSON :
+
+```sql
+ALTER TABLE orders
+ADD CONSTRAINT chk_orders_payment_provider
+CHECK (
+  (metadata ? 'paymentProvider') IS FALSE
+  OR metadata->>'paymentProvider' IN ('stripe', 'paypal')
+);
 ```
 
 ---
