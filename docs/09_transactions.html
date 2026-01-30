@@ -23,17 +23,17 @@
 <li>soit <strong>tout passe</strong> (<code>COMMIT</code>)</li>
 <li>soit <strong>on annule tout</strong> (<code>ROLLBACK</code>)</li>
 </ul>
-<p>Idéal pour éviter un état “à moitié mis à jour”.</p>
+<p>Idéal pour éviter un état &quot;à moitié mis à jour&quot;.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="3" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="3" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="acid-lid%C3%A9e-derri%C3%A8re">ACID (l’idée derrière)</h2>
+<h2 id="acid-lid%C3%A9e-derri%C3%A8re">ACID (l'idée derrière)</h2>
 <ul>
 <li><strong>A</strong>tomicité : tout ou rien</li>
 <li><strong>C</strong>ohérence : les contraintes restent vraies (FK, CHECK, NOT NULL…)</li>
-<li><strong>I</strong>solation : ta transaction voit une vue “cohérente” malgré la concurrence</li>
-<li><strong>D</strong>urabilité : après <code>COMMIT</code>, c’est persisté</li>
+<li><strong>I</strong>solation : ta transaction voit une vue &quot;cohérente&quot; malgré la concurrence</li>
+<li><strong>D</strong>urabilité : après <code>COMMIT</code>, c'est persisté</li>
 </ul>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
@@ -45,7 +45,7 @@
 <li><code>INSERT ...;</code> → validé immédiatement</li>
 <li>si la requête suivante échoue → <strong>la précédente reste</strong> (état partiellement mis à jour)</li>
 </ul>
-<p>Dès que tu as “plusieurs étapes” qui doivent réussir ensemble → <code>BEGIN ... COMMIT</code>.</p>
+<p>Dès qu’on a &quot;plusieurs étapes&quot; qui doivent réussir ensemble → <code>BEGIN ... COMMIT</code>.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="5" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="5" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
@@ -62,19 +62,19 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="6" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="6" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="exemple--pourquoi-cest-indispensable-fil-rouge-shop">Exemple : pourquoi c’est indispensable (fil rouge <code>shop</code>)</h2>
+<h2 id="exemple--pourquoi-cest-indispensable-fil-rouge-shop">Exemple : pourquoi c'est indispensable (fil rouge <code>shop</code>)</h2>
 <p>Cas classique :</p>
 <ul>
 <li>créer une commande (<code>orders</code>)</li>
 <li>ajouter des lignes (<code>order_items</code>)</li>
 <li>décrémenter le stock (<code>products.stock</code>)</li>
 </ul>
-<p>Si une étape échoue, tu ne veux <strong>rien</strong> garder.</p>
+<p>Si une étape échoue, on ne veut <strong>rien</strong> garder.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="7" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="7" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="exemple-sql--cr%C3%A9er-une-commande-atomique">Exemple SQL : créer une commande “atomique”</h2>
+<h2 id="exemple-sql--cr%C3%A9er-une-commande-atomique">Exemple SQL : créer une commande &quot;atomique&quot;</h2>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">BEGIN</span>;
 
 <span class="hljs-keyword">WITH</span> new_order <span class="hljs-keyword">AS</span> (
@@ -108,11 +108,11 @@ inserted_items <span class="hljs-keyword">AS</span> (
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="8" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="8" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="d%C3%A9monstration-d%C3%A9chec--rollback">Démonstration d’échec : rollback</h2>
+<h2 id="d%C3%A9monstration-d%C3%A9chec--rollback">Démonstration d'échec : rollback</h2>
 <p>Si une des requêtes échoue (ex : <code>product_id</code> inexistant → FK), alors :</p>
 <ul>
-<li>la transaction passe en état “erreur”</li>
-<li>tu dois faire un <code>ROLLBACK</code> (sinon tu ne peux plus rien exécuter dans cette transaction)</li>
+<li>la transaction passe en état &quot;erreur&quot;</li>
+<li>on doit faire un <code>ROLLBACK</code> (sinon on ne peut plus rien exécuter dans cette transaction)</li>
 </ul>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">BEGIN</span>;
 
@@ -145,8 +145,8 @@ inserted_items <span class="hljs-keyword">AS</span> (
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="10" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="savepoint--garder-le-core-annuler-un-bonus">Savepoint : garder le “core”, annuler un “bonus”</h2>
-<p>Ex : on crée une commande + lignes (core), puis on essaye d’ajouter une ligne “bonus”.</p>
+<h2 id="savepoint--garder-le-core-annuler-un-bonus">Savepoint : garder le &quot;core&quot;, annuler un &quot;bonus&quot;</h2>
+<p>Ex : on crée une commande + lignes (core), puis on essaye d'ajouter une ligne &quot;bonus&quot;.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">BEGIN</span>;
 
 <span class="hljs-comment">-- core : commande + lignes OK</span>
@@ -167,12 +167,12 @@ inserted_items <span class="hljs-keyword">AS</span> (
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="11" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="11" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="concurrence--le-pi%C3%A8ge-du-lost-update">Concurrence : le piège du “lost update”</h2>
+<h2 id="concurrence--le-pi%C3%A8ge-du-lost-update">Concurrence : le piège du &quot;lost update&quot;</h2>
 <p>Deux utilisateurs achètent en même temps le dernier produit :</p>
 <ul>
 <li>chacun lit <code>stock = 1</code></li>
 <li>chacun fait <code>stock = stock - 1</code><br />
-→ tu peux finir avec <code>stock = -1</code> (ou “vendu deux fois”)</li>
+→ on peut finir avec <code>stock = -1</code> (ou &quot;vendu deux fois&quot;)</li>
 </ul>
 <p>Solution classique : verrouiller la ligne pendant la transaction.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
@@ -195,15 +195,15 @@ inserted_items <span class="hljs-keyword">AS</span> (
 
 <span class="hljs-keyword">COMMIT</span>;
 </code></pre>
-<p>Remarque : le <code>WHERE stock &gt; 0</code> est un “garde-fou” utile.</p>
+<p>Remarque : le <code>WHERE stock &gt; 0</code> est un &quot;garde-fou&quot; utile.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="13" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="13" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="16">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
 <h2 id="isolation--niveaux-%C3%A0-conna%C3%AEtre">Isolation : niveaux (à connaître)</h2>
 <ul>
-<li><code>READ COMMITTED</code> (défaut) : chaque requête voit l’état validé au moment où elle démarre</li>
-<li><code>REPEATABLE READ</code> : “snapshot” stable pendant toute la transaction</li>
+<li><code>READ COMMITTED</code> (défaut) : chaque requête voit l'état validé au moment où elle démarre</li>
+<li><code>REPEATABLE READ</code> : &quot;snapshot&quot; stable pendant toute la transaction</li>
 <li><code>SERIALIZABLE</code> : le plus strict (peut lever des erreurs de sérialisation → à retry côté app)</li>
 </ul>
 <p>Dans un projet web, on commence souvent avec <code>READ COMMITTED</code> + bons verrous / contraintes.</p>
@@ -292,9 +292,9 @@ inserted_items <span class="hljs-keyword">AS</span> (
 <h2 id="points-%C3%A0-retenir-postgresql">Points à retenir (PostgreSQL)</h2>
 <ul>
 <li>Pour du multi-étapes : <code>BEGIN</code> / <code>COMMIT</code> / <code>ROLLBACK</code></li>
-<li><code>SAVEPOINT</code> = rollback partiel (utile pour des “bonus”)</li>
+<li><code>SAVEPOINT</code> = rollback partiel (utile pour des &quot;bonus&quot;)</li>
 <li>Concurrence : penser verrous (<code>FOR UPDATE</code>) + contraintes</li>
-<li>Pour la partie “NoSQL” (JSON/JSONB), voir le chapitre 10</li>
+<li>Pour la partie &quot;NoSQL&quot; (JSON/JSONB), voir le chapitre 10</li>
 </ul>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>

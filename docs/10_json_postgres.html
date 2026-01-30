@@ -30,7 +30,7 @@
 <h2 id="pourquoi-du-jsonb">Pourquoi du JSONB ?</h2>
 <p>Utile quand certaines propriétés :</p>
 <ul>
-<li>varient beaucoup selon le type d’objet (produits, événements…)</li>
+<li>varient beaucoup selon le type d'objet (produits, événements…)</li>
 <li>changent souvent (schéma évolutif)</li>
 </ul>
 <p>On garde le <strong>cœur</strong> en colonnes SQL (requêtes, contraintes, index), et le &quot;reste&quot; en JSON.</p>
@@ -40,7 +40,7 @@
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
 <h2 id="json-vs-jsonb-important"><code>json</code> vs <code>jsonb</code> (important)</h2>
 <ul>
-<li><code>json</code> : stocke du texte JSON “tel quel” (peu utilisé en pratique)</li>
+<li><code>json</code> : stocke du texte JSON &quot;tel quel&quot; (peu utilisé en pratique)</li>
 <li><code>jsonb</code> : stocke une forme binaire optimisée (indexation, opérateurs, perf en lecture)</li>
 </ul>
 <p>Dans la majorité des cas : utilise <strong><code>jsonb</code></strong>.</p>
@@ -56,7 +56,7 @@
 <li>fortement contraint (CHECK/NOT NULL) et stable</li>
 </ul>
 <p>→ mets une <strong>colonne SQL</strong> classique.</p>
-<p>JSONB sert surtout pour des “extras” : metadata, attributs variables, payloads.</p>
+<p>JSONB sert surtout pour des &quot;extras&quot; : metadata, attributs variables, payloads.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="6" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="6" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
@@ -83,7 +83,7 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="8" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="8" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="exemple-2-nosql-l%C3%A9ger--metadata-sur-les-commandes">Exemple 2 (NoSQL “léger”) : metadata sur les commandes</h2>
+<h2 id="exemple-2-nosql-l%C3%A9ger--metadata-sur-les-commandes">Exemple 2 (NoSQL &quot;léger&quot;) : metadata sur les commandes</h2>
 <p>Sur une commande, on peut stocker des infos variables :</p>
 <ul>
 <li>provider de paiement, coupon, ip, user-agent, source marketing…</li>
@@ -153,7 +153,7 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="14" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="14" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="filtrer-par-contenu-op%C3%A9rateur">Filtrer par “contenu” (opérateur <code>@&gt;</code>)</h2>
+<h2 id="filtrer-par-contenu-op%C3%A9rateur">Filtrer par &quot;contenu&quot; (opérateur <code>@&gt;</code>)</h2>
 <p><code>@&gt;</code> vérifie si un JSON contient un sous-document.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> id, name
 <span class="hljs-keyword">FROM</span> products
@@ -163,7 +163,7 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="15" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="15" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="tester-lexistence-dune-cl%C3%A9">Tester l’existence d’une clé : <code>?</code></h2>
+<h2 id="tester-lexistence-dune-cl%C3%A9">Tester l'existence d'une clé : <code>?</code></h2>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> id, name
 <span class="hljs-keyword">FROM</span> products
 <span class="hljs-keyword">WHERE</span> attributes ? <span class="hljs-string">&#x27;tags&#x27;</span>;
@@ -172,7 +172,7 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="16" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="16" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="aller-chercher-un-champ-profond">Aller chercher un champ “profond” : <code>#&gt;&gt;</code></h2>
+<h2 id="aller-chercher-un-champ-profond">Aller chercher un champ &quot;profond&quot; : <code>#&gt;&gt;</code></h2>
 <p>Pour un chemin dans un document :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> id, metadata #<span class="hljs-operator">&gt;&gt;</span> <span class="hljs-string">&#x27;{paymentProvider}&#x27;</span> <span class="hljs-keyword">AS</span> provider
 <span class="hljs-keyword">FROM</span> orders;
@@ -201,8 +201,8 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="18" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="18" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="tableaux-jsonb--d%C3%A9plier-avec-jsonb_array_elements">Tableaux JSONB : “déplier” avec <code>jsonb_array_elements</code></h2>
-<p>Si tu as un tableau <code>tags</code> :</p>
+<h2 id="tableaux-jsonb--d%C3%A9plier-avec-jsonb_array_elements">Tableaux JSONB : &quot;déplier&quot; avec <code>jsonb_array_elements</code></h2>
+<p>Si on a un tableau <code>tags</code> :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> p.id, p.name, t.tag
 <span class="hljs-keyword">FROM</span> products p
 <span class="hljs-keyword">CROSS</span> <span class="hljs-keyword">JOIN</span> <span class="hljs-keyword">LATERAL</span> jsonb_array_elements_text(p.attributes<span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span><span class="hljs-string">&#x27;tags&#x27;</span>) <span class="hljs-keyword">AS</span> t(tag)
@@ -212,13 +212,13 @@
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="19" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="19" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="tableaux-jsonb--tester-la-pr%C3%A9sence-dune-valeur">Tableaux JSONB : tester la présence d’une valeur</h2>
+<h2 id="tableaux-jsonb--tester-la-pr%C3%A9sence-dune-valeur">Tableaux JSONB : tester la présence d'une valeur</h2>
 <p>Sur un tableau, <code>?</code> fonctionne aussi pour tester un élément string :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> id, name
 <span class="hljs-keyword">FROM</span> products
 <span class="hljs-keyword">WHERE</span> attributes<span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span><span class="hljs-string">&#x27;tags&#x27;</span> ? <span class="hljs-string">&#x27;cotton&#x27;</span>;
 </code></pre>
-<p>Alternative (pattern “contains” JSON) :</p>
+<p>Alternative (pattern &quot;contains&quot; JSON) :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">SELECT</span> id, name
 <span class="hljs-keyword">FROM</span> products
 <span class="hljs-keyword">WHERE</span> attributes<span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span><span class="hljs-string">&#x27;tags&#x27;</span> @<span class="hljs-operator">&gt;</span> <span class="hljs-string">&#x27;[&quot;cotton&quot;]&#x27;</span>::jsonb;
@@ -306,16 +306,16 @@
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
 <h2 id="index-jsonb--lequel-choisir">Index JSONB : lequel choisir ?</h2>
 <ul>
-<li>Si tu fais beaucoup de requêtes <code>attributes @&gt; ...</code> → <strong>GIN</strong> sur <code>attributes</code></li>
-<li>Si tu filtres toujours sur la même clé (ex: <code>brand</code>, <code>color</code>) → index d’expression sur <code>(attributes-&gt;&gt;'color')</code></li>
+<li>Si on fait beaucoup de requêtes <code>attributes @&gt; ...</code> → <strong>GIN</strong> sur <code>attributes</code></li>
+<li>Si on filtre toujours sur la même clé (ex: <code>brand</code>, <code>color</code>) → index d’expression sur <code>(attributes-&gt;&gt;'color')</code></li>
 </ul>
-<p>Comme toujours : on indexe ce qu’on requête vraiment.</p>
+<p>Comme toujours : on indexe ce qu'on requête vraiment.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="26" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="26" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="pattern-prod--colonne-g%C3%A9n%C3%A9r%C3%A9e-pour-une-cl%C3%A9-json-fr%C3%A9quente">Pattern “prod” : colonne générée pour une clé JSON fréquente</h2>
-<p>Si tu filtres <strong>tout le temps</strong> sur la même clé JSON, une colonne générée est pratique :</p>
+<h2 id="pattern-prod--colonne-g%C3%A9n%C3%A9r%C3%A9e-pour-une-cl%C3%A9-json-fr%C3%A9quente">Pattern &quot;prod&quot; : colonne générée pour une clé JSON fréquente</h2>
+<p>Si on filtre <strong>tout le temps</strong> sur la même clé JSON, une colonne générée est pratique :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">ALTER TABLE</span> orders
 <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> payment_provider TEXT
 GENERATED ALWAYS <span class="hljs-keyword">AS</span> (metadata<span class="hljs-operator">-</span><span class="hljs-operator">&gt;&gt;</span><span class="hljs-string">&#x27;paymentProvider&#x27;</span>) STORED;
@@ -323,12 +323,12 @@ GENERATED ALWAYS <span class="hljs-keyword">AS</span> (metadata<span class="hljs
 <span class="hljs-keyword">CREATE</span> INDEX idx_orders_payment_provider
 <span class="hljs-keyword">ON</span> orders (payment_provider);
 </code></pre>
-<p>Tu gardes la flexibilité de <code>metadata</code>, mais tu rends la clé “principale” simple à indexer/req.</p>
+<p>On garde la flexibilité de <code>metadata</code>, mais on rend la clé &quot;principale&quot; simple à indexer/req.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="27" data-paginate="true" data-header="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" data-footer="[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)" lang="C" data-marpit-pagination="27" style="--paginate:true;--header:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);--footer:[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5);" data-marpit-pagination-total="28">
 <header><a href="https://antoine07.github.io/db_web2.2/#5">← Index des chapitres</a></header>
-<h2 id="un-minimum-de-validation-avec-check-simple">Un minimum de “validation” avec <code>CHECK</code> (simple)</h2>
+<h2 id="un-minimum-de-validation-avec-check-simple">Un minimum de &quot;validation&quot; avec <code>CHECK</code> (simple)</h2>
 <p>Tu peux imposer une règle sur une clé JSON :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-sql"><span class="hljs-keyword">ALTER TABLE</span> orders
 <span class="hljs-keyword">ADD CONSTRAINT</span> chk_orders_payment_provider

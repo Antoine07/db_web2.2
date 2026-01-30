@@ -101,7 +101,7 @@ La FK répond à : **"Que fait-on quand on supprime/modifie le parent ?"**
 <details class="answer">
   <summary>Afficher la réponse</summary>
 
-Pour éviter des données incohérentes : si tu supprimes le parent, les enfants auraient une FK qui ne pointe plus vers rien (**orphelins**).
+Pour éviter des données incohérentes : si on supprime le parent, les enfants auraient une FK qui ne pointe plus vers rien (**orphelins**).
 
 Donc PostgreSQL te force à choisir :
 - supprimer/traiter les enfants d'abord

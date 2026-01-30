@@ -37,7 +37,7 @@ Sans `BEGIN`, PostgreSQL exécute chaque requête dans sa **propre** transaction
 - `INSERT ...;` → validé immédiatement
 - si la requête suivante échoue → **la précédente reste** (état partiellement mis à jour)
 
-Dès que tu as "plusieurs étapes" qui doivent réussir ensemble → `BEGIN ... COMMIT`.
+Dès qu’on a "plusieurs étapes" qui doivent réussir ensemble → `BEGIN ... COMMIT`.
 
 ---
 
@@ -61,7 +61,7 @@ Cas classique :
 - ajouter des lignes (`order_items`)
 - décrémenter le stock (`products.stock`)
 
-Si une étape échoue, tu ne veux **rien** garder.
+Si une étape échoue, on ne veut **rien** garder.
 
 ---
 
@@ -104,7 +104,7 @@ COMMIT;
 
 Si une des requêtes échoue (ex : `product_id` inexistant → FK), alors :
 - la transaction passe en état "erreur"
-- tu dois faire un `ROLLBACK` (sinon tu ne peux plus rien exécuter dans cette transaction)
+- on doit faire un `ROLLBACK` (sinon on ne peut plus rien exécuter dans cette transaction)
 
 ```sql
 BEGIN;
@@ -167,7 +167,7 @@ COMMIT;
 Deux utilisateurs achètent en même temps le dernier produit :
 - chacun lit `stock = 1`
 - chacun fait `stock = stock - 1`
-→ tu peux finir avec `stock = -1` (ou "vendu deux fois")
+→ on peut finir avec `stock = -1` (ou "vendu deux fois")
 
 Solution classique : verrouiller la ligne pendant la transaction.
 

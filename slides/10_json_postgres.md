@@ -209,7 +209,7 @@ FROM orders;
 
 ## Tableaux JSONB : "déplier" avec `jsonb_array_elements`
 
-Si tu as un tableau `tags` :
+Si on a un tableau `tags` :
 
 ```sql
 SELECT p.id, p.name, t.tag
@@ -332,8 +332,8 @@ ON products ((attributes->>'brand'));
 
 ## Index JSONB : lequel choisir ?
 
-- Si tu fais beaucoup de requêtes `attributes @> ...` → **GIN** sur `attributes`
-- Si tu filtres toujours sur la même clé (ex: `brand`, `color`) → index d'expression sur `(attributes->>'color')`
+- Si on fait beaucoup de requêtes `attributes @> ...` → **GIN** sur `attributes`
+- Si on filtre toujours sur la même clé (ex: `brand`, `color`) → index d’expression sur `(attributes->>'color')`
 
 Comme toujours : on indexe ce qu'on requête vraiment.
 
@@ -341,7 +341,7 @@ Comme toujours : on indexe ce qu'on requête vraiment.
 
 ## Pattern "prod" : colonne générée pour une clé JSON fréquente
 
-Si tu filtres **tout le temps** sur la même clé JSON, une colonne générée est pratique :
+Si on filtre **tout le temps** sur la même clé JSON, une colonne générée est pratique :
 
 ```sql
 ALTER TABLE orders
@@ -352,7 +352,7 @@ CREATE INDEX idx_orders_payment_provider
 ON orders (payment_provider);
 ```
 
-Tu gardes la flexibilité de `metadata`, mais tu rends la clé "principale" simple à indexer/req.
+On garde la flexibilité de `metadata`, mais on rend la clé "principale" simple à indexer/req.
 
 ---
 

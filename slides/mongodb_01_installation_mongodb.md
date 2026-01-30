@@ -54,7 +54,7 @@ docker exec -it mongo-container mongosh \
 
 ## Node.js + MongoDB (Docker uniquement pour MongoDB)
 
-### 1) Lancer MongoDB avec Docker Compose (seul)
+### Lancer MongoDB avec Docker Compose (seul)
 
 ```yaml
 services:
@@ -67,7 +67,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
 ```
 
-### 2) URI de connexion
+---
+
+### URI de connexion
 
 - **Node sur ta machine** (hors Docker) :
   - `mongodb://root:root@localhost:27017/ny_restaurants?authSource=admin`

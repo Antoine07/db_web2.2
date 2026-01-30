@@ -158,7 +158,7 @@ details.answer { margin-top: 12px; }
 <h2 id="pourquoi--fk--pourquoi-postgresql-bloque-une-suppression">Pourquoi ? (FK) — pourquoi PostgreSQL bloque une suppression ?</h2>
 <details class="answer">
   <summary>Afficher la réponse</summary>
-<p>Pour éviter des données incohérentes : si tu supprimes le parent, les enfants auraient une FK qui ne pointe plus vers rien (<strong>orphelins</strong>).</p>
+<p>Pour éviter des données incohérentes : si on supprime le parent, les enfants auraient une FK qui ne pointe plus vers rien (<strong>orphelins</strong>).</p>
 <p>Donc PostgreSQL te force à choisir :</p>
 <ul>
 <li>supprimer/traiter les enfants d'abord</li>
