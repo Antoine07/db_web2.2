@@ -1,0 +1,15 @@
+@startuml
+skinparam shadowing false
+skinparam defaultTextAlignment left
+
+title Du détail aux groupes (GROUP BY)
+
+rectangle "Lignes (détail)\norders\n\n(id=1, status=paid)\n(id=2, status=paid)\n(id=3, status=pending)\n(id=4, status=shipped)\n(id=5, status=pending)" as detail
+
+rectangle "GROUP BY status\nCOUNT(*)" as grp
+
+rectangle "Résultat (1 ligne par groupe)\n\n(status=paid, nb_orders=2)\n(status=pending, nb_orders=2)\n(status=shipped, nb_orders=1)" as result
+
+detail --> grp
+grp --> result
+@enduml

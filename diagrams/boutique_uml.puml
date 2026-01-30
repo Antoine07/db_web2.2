@@ -1,0 +1,53 @@
+@startuml
+hide circle
+skinparam classAttributeIconSize 0
+
+class customers {
+  +id : INT <<PK>>
+  --
+  email : VARCHAR <<UNIQUE>>
+  first_name : VARCHAR
+  last_name : VARCHAR
+  phone : VARCHAR?
+  created_at : DATETIME
+}
+
+class orders {
+  +id : INT <<PK>>
+  --
+  customer_id : INT <<FK>>
+  status : VARCHAR
+  ordered_at : DATETIME
+}
+
+class order_items {
+  +order_id : INT <<PK,FK>>
+  +product_id : INT <<PK,FK>>
+  --
+  quantity : INT
+  unit_price : DECIMAL
+}
+
+class products {
+  +id : INT <<PK>>
+  --
+  category_id : INT <<FK>>
+  sku : VARCHAR <<UNIQUE>>
+  name : VARCHAR
+  price : DECIMAL
+  stock : INT
+}
+
+class categories {
+  +id : INT <<PK>>
+  --
+  name : VARCHAR <<UNIQUE>>
+}
+
+customers "1" <-- "0..*" orders : places
+orders "1" <-- "0..*" order_items : contains
+products "1" <-- "0..*" order_items : lines
+categories "1" <-- "0..*" products : groups
+
+@enduml
+

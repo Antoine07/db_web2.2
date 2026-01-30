@@ -1,0 +1,22 @@
+@startuml
+skinparam shadowing false
+skinparam defaultTextAlignment left
+
+title LEFT JOIN : filtre en WHERE vs filtre en ON
+
+partition "Filtre en WHERE (piège)" {
+  start
+  :customers LEFT JOIN orders;
+  :WHERE orders.status = 'paid';
+  :Les lignes sans commande\n(orders = NULL)\nsont supprimées;
+  stop
+}
+
+partition "Filtre en ON (correct)" {
+  start
+  :customers LEFT JOIN orders\nON ... AND orders.status='paid';
+  :Les clients restent,\norders peut être NULL;
+  stop
+}
+@enduml
+

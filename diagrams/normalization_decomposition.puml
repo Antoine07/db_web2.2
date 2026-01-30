@@ -1,0 +1,34 @@
+@startuml
+skinparam shadowing false
+skinparam defaultTextAlignment left
+
+title Décomposition 3NF (exemple)
+
+rectangle "sales_flat (dénormalisé)\n\norder_id\nordered_at\ncustomer_email\ncustomer_name\ncustomer_phone\nproduct_sku\nproduct_name\ncategory_name\nunit_price\nquantity\nshipping_postal_code\nshipping_city\nregion_name" as flat
+
+rectangle "customers\nid (PK)\nemail (UNIQUE)\nname\nphone" as customers
+rectangle "orders\nid (PK)\ncustomer_id (FK)\nshipping_postal_code (FK)\nordered_at" as orders
+rectangle "order_items\n(order_id, product_id) (PK)\nquantity\nunit_price" as items
+rectangle "products\nid (PK)\nsku (UNIQUE)\ncategory_id (FK)\nname\nprice" as products
+rectangle "categories\nid (PK)\nname (UNIQUE)" as categories
+rectangle "postal_codes\npostal_code (PK)\ncity\nregion_name" as postal
+
+flat --> customers
+flat --> orders
+flat --> items
+flat --> products
+flat --> categories
+flat --> postal
+
+customers -down-> orders : 1..N
+orders -down-> items : 1..N
+products -down-> items : 1..N
+categories -down-> products : 1..N
+postal -down-> orders : 1..N
+
+note right of postal
+Dépendance fonctionnelle :
+postal_code -> (city, region_name)
+end note
+@enduml
+

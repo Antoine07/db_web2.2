@@ -1,0 +1,13 @@
+{
+  "name": "tp-app-project",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.5",
+  "scripts": {
+    "dev:api": "pnpm -C api dev",
+    "dev:client": "pnpm -C client dev",
+    "start:api": "pnpm -C api start",
+    "build:client": "pnpm -C client build",
+    "preview:client": "pnpm -C client preview"
+  }
+}

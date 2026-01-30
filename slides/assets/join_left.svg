@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="520" viewBox="0 0 900 520">
+  <rect width="900" height="520" fill="#ffffff"/>
+  <text x="450" y="60" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="32" font-weight="700" fill="#111827">LEFT JOIN</text>
+  <text x="450" y="95" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="18" fill="#374151">Résultat = tout A (A ∪ (A ∩ B))</text>
+
+  <defs>
+    <circle id="left" cx="360" cy="295" r="160"/>
+    <circle id="right" cx="540" cy="295" r="160"/>
+  </defs>
+
+  <use xlink:href="#left" fill="#7c3aed" opacity="0.70"/>
+  <use xlink:href="#right" fill="#e5e7eb" opacity="0.25"/>
+
+  <use xlink:href="#left" fill="none" stroke="#111827" stroke-width="4"/>
+  <use xlink:href="#right" fill="none" stroke="#111827" stroke-width="4"/>
+
+  <text x="290" y="285" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="20" font-weight="600" fill="#111827">A</text>
+  <text x="290" y="315" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="14" fill="#374151">(table gauche)</text>
+
+  <text x="610" y="285" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="20" font-weight="600" fill="#111827">B</text>
+  <text x="610" y="315" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="14" fill="#374151">(table droite)</text>
+</svg>

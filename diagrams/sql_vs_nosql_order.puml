@@ -1,0 +1,34 @@
+@startuml
+skinparam shadowing false
+skinparam defaultTextAlignment left
+
+title SQL vs NoSQL (document) — une commande
+
+package "SQL (relationnel)" {
+  class orders {
+    id (PK)
+    customer_id (FK)
+    ordered_at
+    status
+  }
+
+  class order_items {
+    (order_id, product_id) (PK)
+    quantity
+    unit_price
+  }
+
+  orders "1" --> "0..*" order_items : lignes
+}
+
+package "NoSQL (document)" {
+  class order_document {
+    _id
+    customer_id
+    ordered_at
+    status
+    items[] {product_id, quantity, unit_price}
+  }
+}
+@enduml
+

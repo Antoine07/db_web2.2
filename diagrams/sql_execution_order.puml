@@ -1,0 +1,27 @@
+@startuml
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+title Ordre logique d'exécution d'une requête SELECT
+
+start
+:FROM + JOIN;
+:WHERE;
+:GROUP BY;
+:HAVING;
+:SELECT;
+:ORDER BY;
+:LIMIT / OFFSET;
+stop
+
+note right
+On écrit souvent :
+SELECT ... FROM ... WHERE ...
+GROUP BY ... HAVING ...
+ORDER BY ... LIMIT ...
+
+Mais l'évaluation suit
+cet ordre logique.
+end note
+@enduml
+
