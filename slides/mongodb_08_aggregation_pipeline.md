@@ -107,6 +107,104 @@ db.restaurants.aggregate([
 
 ---
 
+## `$unwind` — Exemple concret (avant / après)
+
+Avant (`grades` est un tableau) :
+
+```js
+{
+  name: "Morris Park Bake Shop",
+  grades: [{ score: 2 }, { score: 6 }]
+}
+```
+
+Après `$unwind: "$grades"` (1 doc → 2 docs) :
+
+```js
+{ name: "Morris Park Bake Shop", grades: { score: 2 } }
+{ name: "Morris Park Bake Shop", grades: { score: 6 } }
+```
+
+---
+
+## `$unwind` — Quand l’utiliser ?
+
+Tu l’utilises surtout quand tu veux travailler **au niveau des éléments du tableau** :
+
+- filtrer / trier **sur chaque** inspection (`grades.score`, `grades.grade`, `grades.date`)
+- calculer des stats basées sur les inspections (moyenne, min, max…)
+- faire des “lignes” à partir d’un tableau (reporting)
+
+Si tu veux juste savoir “est-ce qu’il existe au moins un élément qui match ?”, tu peux parfois éviter `$unwind` avec un `find` (ou un `$match`) sur un champ du tableau.
+
+---
+
+## `$unwind` — Syntaxe simple vs options
+
+Syntaxe simple :
+
+```js
+{ $unwind: "$grades" }
+```
+
+Syntaxe avec options :
+
+```js
+{
+  $unwind: {
+    path: "$grades",
+    includeArrayIndex: "gradeIndex",
+    preserveNullAndEmptyArrays: true
+  }
+}
+```
+
+---
+
+## Options de `$unwind` (ce que ça change)
+
+- `path` : le champ tableau à “déplier”
+- `includeArrayIndex` : ajoute l’index de l’élément déplié (0, 1, 2…)
+- `preserveNullAndEmptyArrays` :
+  - `false` (par défaut) : si le tableau est vide / manquant → le doc disparaît
+  - `true` : le doc est conservé (avec `grades: null`)
+
+---
+
+## Filtrer “un restaurant” vs “une inspection”
+
+**Cas 1 — garder les restaurants qui ont AU MOINS une inspection avec score ≥ 30** :
+
+```js
+db.restaurants.aggregate([{ $match: { "grades.score": { $gte: 30 } } }]);
+```
+
+**Cas 2 — obtenir les inspections (1 doc = 1 inspection) avec score ≥ 30** :
+
+```js
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $match: { "grades.score": { $gte: 30 } } }
+]);
+```
+
+---
+
+## Piège : `$unwind` “multiplie” les documents
+
+Si tu as :
+- 1 000 restaurants
+- ~10 inspections chacun
+
+Après `$unwind: "$grades"` → ~10 000 documents dans le pipeline.
+
+Bon réflexe :
+- `$match` le plus tôt possible (avant `$unwind`)
+- `$project` les champs utiles seulement
+- `$limit` pendant que tu développes ton pipeline
+
+---
+
 ## `$group` (compter / agréger)
 
 ```js

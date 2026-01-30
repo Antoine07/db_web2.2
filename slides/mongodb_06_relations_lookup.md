@@ -112,6 +112,52 @@ Alternative si tu veux garder les restaurants même sans match :
 
 ---
 
+## `$lookup` → pourquoi un tableau ?
+
+`$lookup` ajoute toujours un **tableau** dans le champ `as` :
+
+- si 0 match → `[]`
+- si 1 match → `[ { ... } ]`
+- si N match → `[ { ... }, { ... }, ... ]`
+
+Donc `$unwind` sert à “aplatir” quand tu veux manipuler l’objet directement.
+
+---
+
+## `$unwind` après `$lookup` : effets à connaître
+
+```js
+{ $unwind: "$borough_info" }
+```
+
+- si `borough_info` contient **1 élément** → 1 doc en sortie (le cas le plus courant ici)
+- si `borough_info` contient **N éléments** → N docs en sortie (duplication des champs du restaurant)
+- si `borough_info` est vide/manquant → le doc est supprimé (sauf `preserveNullAndEmptyArrays: true`)
+
+---
+
+## Alternative à `$unwind` (si tu veux “juste le 1er match”)
+
+Si tu sais qu’il ne peut y avoir qu’un match (ou que tu acceptes d’en prendre un seul) :
+
+```js
+db.restaurants.aggregate([
+  {
+    $lookup: {
+      from: "boroughs",
+      localField: "borough",
+      foreignField: "_id",
+      as: "borough_info"
+    }
+  },
+  { $set: { borough_info: { $arrayElemAt: ["$borough_info", 0] } } }
+]);
+```
+
+Ça évite la multiplication de documents (mais tu perds l’info “multi-match”).
+
+---
+
 ## Quand utiliser `$lookup` ?
 
 - Lecture "back-office" (reporting, admin)

@@ -293,6 +293,21 @@ db.restaurants.aggregate([
 
 ---
 
+## Focus : `$unwind` (le “dépliage”)
+
+`grades` est un tableau d’inspections :
+
+- avant : 1 restaurant = 1 document avec `grades: [...]`
+- après `$unwind: "$grades"` : 1 restaurant = **N documents** (1 par inspection)
+
+Très utile pour :
+- filtrer / trier **par inspection** (`grades.score`, `grades.grade`, `grades.date`)
+- faire des stats sur les inspections (moyenne, min, max…)
+
+Attention : `$unwind` peut multiplier fortement le nombre de documents → filtrer tôt (`$match`) et garder peu de champs (`$project`).
+
+---
+
 ## Top restaurants (score moyen, min 3 inspections)
 
 ```js
