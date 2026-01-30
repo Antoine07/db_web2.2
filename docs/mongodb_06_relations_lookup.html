@@ -97,7 +97,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">{ <span class="hljs-attr">$unwind</span>: <span class="hljs-string">&quot;$borough_info&quot;</span> }
 </code></pre>
 <p>→ transforme “1 doc avec tableau” en “1 doc avec objet”.</p>
-<p>Alternative si tu veux garder les restaurants même sans match :</p>
+<p>Alternative si on veut garder les restaurants même sans match :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">{ <span class="hljs-attr">$unwind</span>: { <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;$borough_info&quot;</span>, <span class="hljs-attr">preserveNullAndEmptyArrays</span>: <span class="hljs-literal">true</span> } }
 </code></pre>
 <footer><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></footer>
@@ -111,7 +111,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 <li>si 1 match → <code>[ { ... } ]</code></li>
 <li>si N match → <code>[ { ... }, { ... }, ... ]</code></li>
 </ul>
-<p>Donc <code>$unwind</code> sert à “aplatir” quand tu veux manipuler l’objet directement.</p>
+<p>Donc <code>$unwind</code> sert à “aplatir” quand on veut manipuler l’objet directement.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="9" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="9" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="13">
@@ -128,8 +128,8 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="10" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="13">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
-<h2 id="alternative-%C3%A0-unwind-si-tu-veux-juste-le-1er-match">Alternative à <code>$unwind</code> (si tu veux “juste le 1er match”)</h2>
-<p>Si tu sais qu’il ne peut y avoir qu’un match (ou que tu acceptes d’en prendre un seul) :</p>
+<h2 id="alternative-%C3%A0-unwind-si-on-veut-juste-le-1er-match">Alternative à <code>$unwind</code> (si on veut “juste le 1er match”)</h2>
+<p>Si on sait qu’il ne peut y avoir qu’un match (ou qu’on accepte d’en prendre un seul) :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">db.<span class="hljs-property">restaurants</span>.<span class="hljs-title function_">aggregate</span>([
   {
     <span class="hljs-attr">$lookup</span>: {
@@ -142,7 +142,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
   { <span class="hljs-attr">$set</span>: { <span class="hljs-attr">borough_info</span>: { <span class="hljs-attr">$arrayElemAt</span>: [<span class="hljs-string">&quot;$borough_info&quot;</span>, <span class="hljs-number">0</span>] } } }
 ]);
 </code></pre>
-<p>Ça évite la multiplication de documents (mais tu perds l’info “multi-match”).</p>
+<p>Ça évite la multiplication de documents (mais on perd l’info “multi-match”).</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="11" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="11" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="13">

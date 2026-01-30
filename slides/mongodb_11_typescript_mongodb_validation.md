@@ -46,7 +46,7 @@ export type Restaurant = {
 
 ## Typage "en amont" : `satisfies`
 
-Ça te protège quand **tu construis** l'objet dans ton code.
+Ça protège quand on **construit** l'objet dans le code.
 
 ```ts
 const candidate = {
@@ -115,9 +115,9 @@ await collection.insertOne(safe);
 
 ## Et la validation côté MongoDB ?
 
-Tu peux la rendre "optionnelle" si :
-- tu contrôles l'unique app qui écrit
-- et tu valides déjà runtime côté TS
+On peut la rendre "optionnelle" si :
+- on contrôle l'unique app qui écrit
+- et on valide déjà runtime côté TS
 
 Sinon (multi writers) → garde-fou DB recommandé :
 

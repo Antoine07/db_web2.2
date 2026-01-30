@@ -104,7 +104,7 @@ Après `$lookup`, `borough_info` est un **tableau** (même si un seul match).
 
 → transforme “1 doc avec tableau” en “1 doc avec objet”.
 
-Alternative si tu veux garder les restaurants même sans match :
+Alternative si on veut garder les restaurants même sans match :
 
 ```js
 { $unwind: { path: "$borough_info", preserveNullAndEmptyArrays: true } }
@@ -120,7 +120,7 @@ Alternative si tu veux garder les restaurants même sans match :
 - si 1 match → `[ { ... } ]`
 - si N match → `[ { ... }, { ... }, ... ]`
 
-Donc `$unwind` sert à “aplatir” quand tu veux manipuler l’objet directement.
+Donc `$unwind` sert à “aplatir” quand on veut manipuler l’objet directement.
 
 ---
 
@@ -136,9 +136,9 @@ Donc `$unwind` sert à “aplatir” quand tu veux manipuler l’objet directeme
 
 ---
 
-## Alternative à `$unwind` (si tu veux “juste le 1er match”)
+## Alternative à `$unwind` (si on veut “juste le 1er match”)
 
-Si tu sais qu’il ne peut y avoir qu’un match (ou que tu acceptes d’en prendre un seul) :
+Si on sait qu’il ne peut y avoir qu’un match (ou qu’on accepte d’en prendre un seul) :
 
 ```js
 db.restaurants.aggregate([
@@ -154,7 +154,7 @@ db.restaurants.aggregate([
 ]);
 ```
 
-Ça évite la multiplication de documents (mais tu perds l’info “multi-match”).
+Ça évite la multiplication de documents (mais on perd l’info “multi-match”).
 
 ---
 

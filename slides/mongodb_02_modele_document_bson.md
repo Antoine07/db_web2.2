@@ -61,7 +61,7 @@ db.restaurants.find({ borough: "Queens" }, { name: 1, cuisine: 1, _id: 0 })
 
 ---
 
-## Exemple : `$in` (équivalent “IN”)
+## Exemple : `$in` (équivalent "IN")
 
 ```js
 db.restaurants.find(
@@ -72,7 +72,7 @@ db.restaurants.find(
 
 ---
 
-## Exemple : `$regex` (recherche “contient”)
+## Exemple : `$regex` (recherche "contient")
 
 ```js
 db.restaurants.find(
@@ -85,7 +85,7 @@ db.restaurants.find(
 
 ## Exemple : comparaisons (`$gte`, `$lte`)
 
-Ici : “au moins une inspection avec un score ≥ 30” :
+Ici : "au moins une inspection avec un score ≥ 30" :
 
 ```js
 db.restaurants.find(
@@ -118,7 +118,7 @@ db.restaurants.find(
 
 ---
 
-## Tableaux : match “au moins un élément”
+## Tableaux : match "au moins un élément"
 
 ```js
 // Tous les restaurants qui ont déjà eu une note C
@@ -138,6 +138,49 @@ db.restaurants.find(
   { grades: { $elemMatch: { grade: "A", score: { $lt: 5 } } } },
   { name: 1, borough: 1, cuisine: 1, _id: 0 }
 ).limit(10);
+```
+
+---
+
+## Piège : sans `$elemMatch`, on peut avoir des faux positifs
+
+Démo (collection `etudiants`) :
+
+```js
+db.etudiants.insertMany([
+  {
+    nom: "Alice",
+    notes: [
+      { matiere: "maths", note: 18 },
+      { matiere: "français", note: 9 }
+    ]
+  },
+  {
+    nom: "Bob",
+    notes: [
+      { matiere: "maths", note: 8 },
+      { matiere: "français", note: 16 }
+    ]
+  }
+]);
+```
+
+---
+
+## Démo : faux positif vs bonne pratique
+
+```js
+// Sans $elemMatch : chaque critère peut matcher un élément différent du tableau
+// => faux positif possible
+db.etudiants.find({
+  "notes.matiere": "maths",
+  "notes.note": { $gt: 15 }
+});
+
+// Avec $elemMatch : les conditions doivent matcher le même élément
+db.etudiants.find({
+  notes: { $elemMatch: { matiere: "maths", note: { $gt: 15 } } }
+});
 ```
 
 ---

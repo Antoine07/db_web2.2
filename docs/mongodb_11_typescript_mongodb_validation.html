@@ -50,7 +50,7 @@ npm i -D typescript tsx @types/node
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="5" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="5" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="11">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="typage-en-amont--satisfies">Typage &quot;en amont&quot; : <code>satisfies</code></h2>
-<p>Ça te protège quand <strong>tu construis</strong> l'objet dans ton code.</p>
+<p>Ça protège quand on <strong>construit</strong> l'objet dans le code.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-ts"><span class="hljs-keyword">const</span> candidate = {
   <span class="hljs-attr">restaurant_id</span>: <span class="hljs-string">&quot;demo-ts-001&quot;</span>,
   <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Demo TS&quot;</span>,
@@ -111,10 +111,10 @@ npm i -D typescript tsx @types/node
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="10" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="11">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="et-la-validation-c%C3%B4t%C3%A9-mongodb">Et la validation côté MongoDB ?</h2>
-<p>Tu peux la rendre &quot;optionnelle&quot; si :</p>
+<p>On peut la rendre &quot;optionnelle&quot; si :</p>
 <ul>
-<li>tu contrôles l'unique app qui écrit</li>
-<li>et tu valides déjà runtime côté TS</li>
+<li>on contrôle l'unique app qui écrit</li>
+<li>et on valide déjà runtime côté TS</li>
 </ul>
 <p>Sinon (multi writers) → garde-fou DB recommandé :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">db.<span class="hljs-title function_">runCommand</span>({

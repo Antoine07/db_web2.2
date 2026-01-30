@@ -67,7 +67,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="5" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="5" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="12">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="group--accumulateurs-%C3%A0-conna%C3%AEtre"><code>$group</code> : accumulateurs (à connaître)</h2>
-<p>Dans <code>$group</code>, tu utilises des <em>accumulateurs</em> :</p>
+<p>Dans <code>$group</code>, on utilise des <em>accumulateurs</em> :</p>
 <ul>
 <li><code>{ $sum: 1 }</code> → compter</li>
 <li><code>{ $avg: &quot;$grades.score&quot; }</code> → moyenne</li>
@@ -80,7 +80,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="attention-%C3%A0-first--last">Attention à <code>$first</code> / <code>$last</code></h2>
 <p><code>$first</code> / <code>$last</code> dépendent de l’ordre <strong>avant</strong> le <code>$group</code>.</p>
-<p>Si tu veux “dernière inspection”, tu dois trier avant :</p>
+<p>Si on veut la “dernière inspection”, on doit trier avant :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">db.<span class="hljs-property">restaurants</span>.<span class="hljs-title function_">aggregate</span>([
   { <span class="hljs-attr">$match</span>: { <span class="hljs-attr">borough</span>: <span class="hljs-string">&quot;Manhattan&quot;</span> } },
   { <span class="hljs-attr">$unwind</span>: <span class="hljs-string">&quot;$grades&quot;</span> },
@@ -101,7 +101,7 @@ db.<span class="hljs-property">restaurants</span>.<span class="hljs-title functi
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="7" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="7" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="12">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="alternative--compter-sans-unwind">Alternative : compter sans <code>$unwind</code></h2>
-<p>Si tu veux juste le nombre d’inspections (taille du tableau) :</p>
+<p>Si on veut juste le nombre d’inspections (taille du tableau) :</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">db.<span class="hljs-property">restaurants</span>.<span class="hljs-title function_">aggregate</span>([
   { <span class="hljs-attr">$match</span>: { <span class="hljs-attr">borough</span>: <span class="hljs-string">&quot;Manhattan&quot;</span> } },
   { <span class="hljs-attr">$project</span>: { <span class="hljs-attr">name</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">gradesCount</span>: { <span class="hljs-attr">$size</span>: <span class="hljs-string">&quot;$grades&quot;</span> } } },

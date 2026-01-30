@@ -63,7 +63,7 @@ db.restaurants.aggregate([
 
 ## `$group` : accumulateurs (à connaître)
 
-Dans `$group`, tu utilises des *accumulateurs* :
+Dans `$group`, on utilise des *accumulateurs* :
 
 - `{ $sum: 1 }` → compter
 - `{ $avg: "$grades.score" }` → moyenne
@@ -74,9 +74,9 @@ Dans `$group`, tu utilises des *accumulateurs* :
 
 ## Attention à `$first` / `$last`
 
-`$first` / `$last` dépendent de l’ordre **avant** le `$group`.
+`$first` / `$last` dépendent de l'ordre **avant** le `$group`.
 
-Si tu veux “dernière inspection”, tu dois trier avant :
+Si on veut la "dernière inspection", on doit trier avant :
 
 ```js
 db.restaurants.aggregate([
@@ -99,7 +99,7 @@ db.restaurants.aggregate([
 
 ## Alternative : compter sans `$unwind`
 
-Si tu veux juste le nombre d’inspections (taille du tableau) :
+Si on veut juste le nombre d'inspections (taille du tableau) :
 
 ```js
 db.restaurants.aggregate([
@@ -116,52 +116,28 @@ db.restaurants.aggregate([
 
 ```js
 db.restaurants.aggregate([
+  // Transforme le tableau "grades" en un document par inspection
+  // Chaque restaurant est dupliqué autant de fois qu’il a d’inspections
   { $unwind: "$grades" },
+
   {
     $bucket: {
+      // Champ utilisé pour répartir les documents dans les intervalles
       groupBy: "$grades.score",
+
+      // Bornes des intervalles (inclus à gauche, exclus à droite)
+      // 0–9, 10–19, 20–29, 30–39, 40–49, 50–99
       boundaries: [0, 10, 20, 30, 40, 50, 100],
+
+      // Bucket par défaut pour les scores >= 100 ou hors bornes
       default: "100+",
-      output: { count: { $sum: 1 } }
+
+      // Pour chaque intervalle, on compte le nombre d’inspections
+      output: {
+        count: { $sum: 1 }
+      }
     }
   }
-]);
-```
-
----
-
-## Exemple : 2 rapports en 1 (`$facet`)
-
-```js
-db.restaurants.aggregate([
-  {
-    $facet: {
-      byBorough: [
-        { $group: { _id: "$borough", count: { $sum: 1 } } },
-        { $sort: { count: -1 } }
-      ],
-      topCuisinesInManhattan: [
-        { $match: { borough: "Manhattan" } },
-        { $group: { _id: "$cuisine", count: { $sum: 1 } } },
-        { $sort: { count: -1 } },
-        { $limit: 10 }
-      ]
-    }
-  }
-]);
-```
-
----
-
-## Shorthand utile : `$sortByCount` (bonus)
-
-Top cuisines (équivalent `$group` + `$sort`) :
-
-```js
-db.restaurants.aggregate([
-  { $match: { borough: "Manhattan" } },
-  { $sortByCount: "$cuisine" },
-  { $limit: 10 }
 ]);
 ```
 

@@ -20,10 +20,10 @@ footer: "[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index
 
 ## `find` vs `aggregate`
 
-- `find` : filtrer + projeter + trier (lecture “simple”)
+- `find` : filtrer + projeter + trier (lecture "simple")
 - `aggregate` : enchaîner des transformations (groupes, calculs, tableaux, reporting)
 
-Règle : dès que tu as besoin d’un “GROUP BY” ou de calculs sur des tableaux → `aggregate`.
+Règle : dès qu’on a besoin d’un "GROUP BY" ou de calculs sur des tableaux → `aggregate`.
 
 ---
 
@@ -107,101 +107,66 @@ db.restaurants.aggregate([
 
 ---
 
-## `$unwind` — Exemple concret (avant / après)
+## Pourquoi on "déplie" un tableau ?
 
-Avant (`grades` est un tableau) :
+Un pipeline travaille **document par document** :
+- `$match` filtre des documents
+- `$group` agrège des documents
 
-```js
-{
-  name: "Morris Park Bake Shop",
-  grades: [{ score: 2 }, { score: 6 }]
-}
-```
+Or `grades` est un **tableau** (plusieurs inspections dans un seul document).
 
-Après `$unwind: "$grades"` (1 doc → 2 docs) :
-
-```js
-{ name: "Morris Park Bake Shop", grades: { score: 2 } }
-{ name: "Morris Park Bake Shop", grades: { score: 6 } }
-```
+`$unwind` transforme chaque élément du tableau en **un document** dans le pipeline.  
+Cela permet de filtrer et d’agréger **au niveau d’une inspection** (et pas seulement au niveau du restaurant).
 
 ---
 
-## `$unwind` — Quand l’utiliser ?
+## Exemple (objectif) : compter les inspections qui valent `"C"`
 
-Tu l’utilises surtout quand tu veux travailler **au niveau des éléments du tableau** :
-
-- filtrer / trier **sur chaque** inspection (`grades.score`, `grades.grade`, `grades.date`)
-- calculer des stats basées sur les inspections (moyenne, min, max…)
-- faire des “lignes” à partir d’un tableau (reporting)
-
-Si tu veux juste savoir “est-ce qu’il existe au moins un élément qui match ?”, tu peux parfois éviter `$unwind` avec un `find` (ou un `$match`) sur un champ du tableau.
-
----
-
-## `$unwind` — Syntaxe simple vs options
-
-Syntaxe simple :
-
-```js
-{ $unwind: "$grades" }
-```
-
-Syntaxe avec options :
-
-```js
-{
-  $unwind: {
-    path: "$grades",
-    includeArrayIndex: "gradeIndex",
-    preserveNullAndEmptyArrays: true
-  }
-}
-```
-
----
-
-## Options de `$unwind` (ce que ça change)
-
-- `path` : le champ tableau à “déplier”
-- `includeArrayIndex` : ajoute l’index de l’élément déplié (0, 1, 2…)
-- `preserveNullAndEmptyArrays` :
-  - `false` (par défaut) : si le tableau est vide / manquant → le doc disparaît
-  - `true` : le doc est conservé (avec `grades: null`)
-
----
-
-## Filtrer “un restaurant” vs “une inspection”
-
-**Cas 1 — garder les restaurants qui ont AU MOINS une inspection avec score ≥ 30** :
-
-```js
-db.restaurants.aggregate([{ $match: { "grades.score": { $gte: 30 } } }]);
-```
-
-**Cas 2 — obtenir les inspections (1 doc = 1 inspection) avec score ≥ 30** :
+On veut compter le nombre d’inspections ayant `grade = "C"` dans toute la collection.
 
 ```js
 db.restaurants.aggregate([
   { $unwind: "$grades" },
-  { $match: { "grades.score": { $gte: 30 } } }
+  { $match: { "grades.grade": "C" } },
+  { $group: { _id: null, cInspections: { $sum: 1 } } }
 ]);
 ```
 
 ---
 
-## Piège : `$unwind` “multiplie” les documents
+## Ce que `$unwind` fait vraiment (multiplication des docs)
 
-Si tu as :
-- 1 000 restaurants
-- ~10 inspections chacun
+Avant (1 restaurant, plusieurs inspections) :
 
-Après `$unwind: "$grades"` → ~10 000 documents dans le pipeline.
+```js
+{ name: "X", grades: [{ grade: "A" }, { grade: "C" }] }
+```
 
-Bon réflexe :
-- `$match` le plus tôt possible (avant `$unwind`)
-- `$project` les champs utiles seulement
-- `$limit` pendant que tu développes ton pipeline
+Après `$unwind: "$grades"` (1 doc → 2 docs) :
+
+```js
+{ name: "X", grades: { grade: "A" } }
+{ name: "X", grades: { grade: "C" } }
+```
+
+Raison technique : après `$unwind`, `grades.grade` devient une valeur simple (plus un tableau), donc `$match` et `$group` peuvent s’appliquer directement.
+
+---
+
+## Pipeline : cuisines avec pire score moyen (Manhattan)
+
+Peu d’opérateurs, mais un reporting complet : filtrer → déplier → agréger → filtrer → trier.
+
+```js
+db.restaurants.aggregate([
+  { $match: { borough: "Manhattan" } },
+  { $unwind: "$grades" },
+  { $group: { _id: "$cuisine", avgScore: { $avg: "$grades.score" }, inspections: { $sum: 1 } } },
+  { $match: { inspections: { $gte: 200 } } },
+  { $sort: { avgScore: -1 } },
+  { $limit: 10 }
+]);
+```
 
 ---
 
