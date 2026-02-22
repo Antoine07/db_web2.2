@@ -28,10 +28,10 @@
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
 <h2 id="find-vs-aggregate"><code>find</code> vs <code>aggregate</code></h2>
 <ul>
-<li><code>find</code> : filtrer + projeter + trier (lecture “simple”)</li>
+<li><code>find</code> : filtrer + projeter + trier (lecture &quot;simple&quot;)</li>
 <li><code>aggregate</code> : enchaîner des transformations (groupes, calculs, tableaux, reporting)</li>
 </ul>
-<p>Règle : dès qu’on a besoin d’un “GROUP BY” ou de calculs sur des tableaux → <code>aggregate</code>.</p>
+<p>Règle : dès qu’on a besoin d’un &quot;GROUP BY&quot; ou de calculs sur des tableaux → <code>aggregate</code>.</p>
 <footer><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="4" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="4" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="19">
@@ -115,7 +115,7 @@ Après : 1 restaurant = N documents (1 par inspection).</p>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="10" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="10" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="19">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
-<h2 id="pourquoi-on-d%C3%A9plie-un-tableau">Pourquoi on “déplie” un tableau ?</h2>
+<h2 id="pourquoi-on-d%C3%A9plie-un-tableau">Pourquoi on &quot;déplie&quot; un tableau ?</h2>
 <p>Un pipeline travaille <strong>document par document</strong> :</p>
 <ul>
 <li><code>$match</code> filtre des documents</li>
@@ -153,7 +153,7 @@ Cela permet de filtrer et d’agréger <strong>au niveau d’une inspection</str
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="13" data-paginate="true" data-header="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" data-footer="[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html)" lang="C" data-marpit-pagination="13" style="--paginate:true;--header:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);--footer:[← Index MongoDB](https://antoine07.github.io/db_web2.2/mongodb_index.html);" data-marpit-pagination-total="19">
 <header><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></header>
-<h2 id="pipeline-wow-simple--cuisines-avec-pire-score-moyen-manhattan">Pipeline “wow” (simple) : cuisines avec pire score moyen (Manhattan)</h2>
+<h2 id="pipeline--cuisines-avec-pire-score-moyen-manhattan">Pipeline : cuisines avec pire score moyen (Manhattan)</h2>
 <p>Peu d’opérateurs, mais un reporting complet : filtrer → déplier → agréger → filtrer → trier.</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js">db.<span class="hljs-property">restaurants</span>.<span class="hljs-title function_">aggregate</span>([
   { <span class="hljs-attr">$match</span>: { <span class="hljs-attr">borough</span>: <span class="hljs-string">&quot;Manhattan&quot;</span> } },

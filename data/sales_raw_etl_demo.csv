@@ -1,0 +1,16 @@
+order_ref,order_date,customer_email,customer_name,city,product_name,category,quantity,unit_price,payment_status
+A1001,2026-01-02,alice@example.com,Alice Martin,Paris,Headphones,Audio,1,79.99,paid
+A1002,02/01/2026,bob@example.com,Bob Durand,Lyon,Wireless Mouse,IT,2,25,PAID
+A1003,2026/01/03,chloe@example.com,Chloe Petit,marseille,Mechanical Keyboard,IT,1,89,paid
+A1003,2026/01/03,chloe@example.com,Chloe Petit,marseille,Mechanical Keyboard,IT,1,89,paid
+A1004,2026-01-04,invalid-mail,David Roi,Nantes,Monitor 24,IT,1,199.90,paid
+A1005,04-01-2026,emma@example.com,Emma Lenoir,Paris,HD Webcam,IT,,49.90,paid
+A1006,2026-01-05,franck@example.com,Franck Noel,Lille,Headphones,Audio,1,"79,90",paid
+A1007,2026-01-06,gael@example.com,Gael Simon,Paris,Laptop Stand,Accessories,3,19.99,refunded
+A1008,2026-01-07,hugo@example.com,Hugo Lima,Bordeaux,USB-C Dock,IT,1, 129.00 ,paid
+A1009,2026-13-01,ines@example.com,Ines Roussel,Toulouse,Wireless Mouse,IT,1,25.00,paid
+A1010,2026-01-08,jules@example.com,Jules Garnier,Paris,Headphones,Audio,-1,79.99,paid
+A1011,2026-01-09,kim@example.com,Kim Nguyen,Nice,SSD 1TB,IT,1,abc,paid
+A1012,2026-01-10,lina@example.com,Lina Rossi,Paris,Wireless Mouse,it,2,25.00,Paid
+A1013,2026-01-11,malo@example.com,Malo Diaz,Lyon,Office Chair,Furniture,1,149.00,pending
+A1014,2026-01-12,alice@example.com,Alice Martin,Paris,Headphones,Audio,1,79.99,paid

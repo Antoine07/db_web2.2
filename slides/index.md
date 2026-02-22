@@ -37,6 +37,8 @@ Objectif : savoir interroger et faire évoluer ce schéma proprement.
 
 ![Schéma UML Boutique](https://antoine07.github.io/db_web2.2/assets/boutique_uml.svg)
 
+![Dépôt](https://github.com/Antoine07/db_web2.2)
+
 ---
 
 ## Chapitres 
@@ -52,6 +54,8 @@ Objectif : savoir interroger et faire évoluer ce schéma proprement.
 - [Sous-requêtes (requêtes imbriquées)](https://antoine07.github.io/db_web2.2/11_sous_requetes.html)
 - [Transactions](https://antoine07.github.io/db_web2.2/09_transactions.html)
 - [JSON (PostgreSQL)](https://antoine07.github.io/db_web2.2/10_json_postgres.html)
+- [Analyse de données (ETL + modélisation)](https://antoine07.github.io/db_web2.2/12_analyse_de_donnees_postgres.html)
+- [Requêtes avancées d'analyse (PostgreSQL)](https://antoine07.github.io/db_web2.2/13_requetes_avancees_analyse.html)
 - Bonus : [Normalisation](https://antoine07.github.io/db_web2.2/09_normalisation.html)
 
 ---

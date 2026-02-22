@@ -1,0 +1,9 @@
+order_ref,order_date,customer_email,customer_name,city,product_name,category,quantity,unit_price,line_amount
+A1001,2026-01-02,alice@example.com,Alice Martin,Paris,Headphones,Audio,1,79.99,79.99
+A1002,2026-01-02,bob@example.com,Bob Durand,Lyon,Wireless Mouse,IT,2,25.00,50.00
+A1003,2026-01-03,chloe@example.com,Chloe Petit,Marseille,Mechanical Keyboard,IT,1,89.00,89.00
+A1005,2026-01-04,emma@example.com,Emma Lenoir,Paris,HD Webcam,IT,1,49.90,49.90
+A1006,2026-01-05,franck@example.com,Franck Noel,Lille,Headphones,Audio,1,79.90,79.90
+A1008,2026-01-07,hugo@example.com,Hugo Lima,Bordeaux,USB-C Dock,IT,1,129.00,129.00
+A1012,2026-01-10,lina@example.com,Lina Rossi,Paris,Wireless Mouse,IT,2,25.00,50.00
+A1014,2026-01-12,alice@example.com,Alice Martin,Paris,Headphones,Audio,1,79.99,79.99

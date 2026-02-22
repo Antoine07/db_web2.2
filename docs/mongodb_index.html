@@ -38,7 +38,7 @@
 curl -L <span class="hljs-string">&quot;https://raw.githubusercontent.com/mongodb/docs-assets/primer-dataset/primer-dataset.json&quot;</span> \
   -o shared/mongodb/restaurants.json
 
-docker <span class="hljs-built_in">exec</span> -i mongo-container mongoimport \
+docker compose <span class="hljs-built_in">exec</span> -T mongodb mongoimport \
   --db ny_restaurants \
   --collection restaurants \
   --authenticationDatabase admin \

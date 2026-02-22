@@ -26,7 +26,7 @@ curl -L <span class="hljs-string">&quot;https://raw.githubusercontent.com/mongod
   -o shared/mongodb/restaurants.json
 
 <span class="hljs-comment"># import: base `ny_restaurants`, collection `restaurants`</span>
-docker <span class="hljs-built_in">exec</span> -i mongo-container mongoimport \
+docker compose <span class="hljs-built_in">exec</span> -T mongodb mongoimport \
   --db ny_restaurants \
   --collection restaurants \
   --authenticationDatabase admin \
@@ -36,7 +36,7 @@ docker <span class="hljs-built_in">exec</span> -i mongo-container mongoimport \
   --file /shared/restaurants.json
 </code></pre>
 <p>Connexion :</p>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash">docker <span class="hljs-built_in">exec</span> -it mongo-container mongosh <span class="hljs-string">&quot;mongodb://root:root@localhost:27017/ny_restaurants?authSource=admin&quot;</span>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-bash">docker compose <span class="hljs-built_in">exec</span> mongodb mongosh <span class="hljs-string">&quot;mongodb://root:root@localhost:27017/ny_restaurants?authSource=admin&quot;</span>
 </code></pre>
 <footer><a href="https://antoine07.github.io/db_web2.2/mongodb_index.html">← Index MongoDB</a></footer>
 </section>

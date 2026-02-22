@@ -13,6 +13,7 @@
 - `Exercices/09_normalisation.md`
 - `Exercices/10_json_postgres.md`
 - `Exercices/11_sous_requetes.md`
+- `Exercices/12_analyse_de_donnees_etl.md`
 
 ## MongoDB
 

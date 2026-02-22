@@ -31,7 +31,7 @@ curl -L "https://raw.githubusercontent.com/mongodb/docs-assets/primer-dataset/pr
   -o shared/mongodb/restaurants.json
 
 # import: base `ny_restaurants`, collection `restaurants`
-docker exec -i mongo-container mongoimport \
+docker compose exec -T mongodb mongoimport \
   --db ny_restaurants \
   --collection restaurants \
   --authenticationDatabase admin \
@@ -46,7 +46,7 @@ docker exec -i mongo-container mongoimport \
 ## Connexion `mongosh`
 
 ```bash
-docker exec -it mongo-container mongosh \
+docker compose exec mongodb mongosh \
   "mongodb://root:root@localhost:27017/ny_restaurants?authSource=admin"
 ```
 

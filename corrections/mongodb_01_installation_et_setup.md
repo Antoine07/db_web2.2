@@ -18,7 +18,7 @@ docker compose up -d
 curl -L "https://raw.githubusercontent.com/mongodb/docs-assets/primer-dataset/primer-dataset.json" \
   -o shared/mongodb/restaurants.json
 
-docker exec -i mongo-container mongoimport \
+docker compose exec -T mongodb mongoimport \
   --db ny_restaurants \
   --collection restaurants \
   --authenticationDatabase admin \

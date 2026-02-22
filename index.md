@@ -24,6 +24,8 @@
 9. JSON (PostgreSQL) — [Slides](slides/10_json_postgres.md) · [HTML](docs/10_json_postgres.html)
 10. Sous-requêtes (requêtes imbriquées) — [Slides](slides/11_sous_requetes.md) · [HTML](docs/11_sous_requetes.html)
 11. Transactions — [Slides](slides/09_transactions.md) · [HTML](docs/09_transactions.html)
+12. Analyse de donnees (ETL + modelisation) — [Slides](slides/12_analyse_de_donnees_postgres.md) · [HTML](docs/12_analyse_de_donnees_postgres.html)
+13. Requetes avancees d'analyse — [Slides](slides/13_requetes_avancees_analyse.md) · [HTML](docs/13_requetes_avancees_analyse.html)
 
 ## Bonus
 
@@ -42,6 +44,7 @@
 - 08 : [Exercices/08_aggregation.md](Exercices/08_aggregation.md)
 - 10 : [Exercices/10_json_postgres.md](Exercices/10_json_postgres.md)
 - 11 : [Exercices/11_sous_requetes.md](Exercices/11_sous_requetes.md)
+- 12 : [Exercices/12_analyse_de_donnees_etl.md](Exercices/12_analyse_de_donnees_etl.md)
 
 ## Corrections
 
@@ -56,6 +59,7 @@
 - 08 : [corrections/08_aggregation.md](corrections/08_aggregation.md)
 - 10 : [corrections/10_json_postgres.md](corrections/10_json_postgres.md)
 - 11 : [corrections/11_sous_requetes.md](corrections/11_sous_requetes.md)
+- 12 : [corrections/12_analyse_de_donnees_etl.md](corrections/12_analyse_de_donnees_etl.md)
 
 ## Diagrammes (UML & pédagogiques)
 
