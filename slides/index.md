@@ -66,3 +66,9 @@ Objectif : savoir interroger et faire évoluer ce schéma proprement.
 ## Bonus — Cours MongoDB
 
 - Plan : https://antoine07.github.io/db_web2.2/mongodb_index.html
+
+---
+
+## Bonus — Cours MySQL
+
+- Plan : https://antoine07.github.io/db_web2.2/mysql_index.html

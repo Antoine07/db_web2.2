@@ -8,10 +8,12 @@
 - Exercices par chapitre : `Exercices/`
 - TPs : `TPs/`
 - (Nouveau) Cours MongoDB : `index_mongodb.md` + `slides/mongodb_*.md`
+- (Nouveau) Cours MySQL (transcription) : `index_mysql.md` + `slides/mysql_*.md`
 
 Cours en ligne :
 - SQL (PostgreSQL) : https://antoine07.github.io/db_web2.2/
 - MongoDB : https://antoine07.github.io/db_web2.2/mongodb_index.html
+- MySQL : https://antoine07.github.io/db_web2.2/mysql_index.html
 
 ## Installation PostgreSQL (recommandé)
 

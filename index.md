@@ -6,6 +6,12 @@
 - Plan : [index_mongodb.md](index_mongodb.md)
 - Slides : [slides/mongodb_index.md](slides/mongodb_index.md)
 
+## Cours MySQL (transcription du parcours PostgreSQL)
+
+- Version en ligne : https://antoine07.github.io/db_web2.2/mysql_index.html
+- Plan : [index_mysql.md](index_mysql.md)
+- Slides : [slides/mysql_index.md](slides/mysql_index.md)
+
 ## Slides (cours)
 
 - Plan (source Marp) : [slides/index.md](slides/index.md)
