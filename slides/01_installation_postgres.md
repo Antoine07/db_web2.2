@@ -21,8 +21,9 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 
 ## Pré-requis
 
-- Docker Desktop installé
-- Le `docker-compose.yml` du TP (dossier `TPs/app-project-starter/` ou votre copie)
+- Docker Desktop installé 
+- Le `docker-compose.yml` du TP (dossier `stater-db/` ou votre copie)
+- [Dépôt](https://github.com/Antoine07/db)
 
 ---
 

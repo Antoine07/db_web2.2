@@ -18,9 +18,8 @@ paginate: true
 - Comprendre le relationnel (PK/FK) et croiser des tables (jointures)
 - Produire des indicateurs (agrégation)
 
-- Exercices Tps et starter-db 
-
-![Dépôt](https://github.com/Antoine07/db_web2.2)
+- Exercices Tps et `starter-db` 
+- [Dépôt](https://github.com/Antoine07/db)
 
 
 ---

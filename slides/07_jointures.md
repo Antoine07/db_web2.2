@@ -197,3 +197,4 @@ WHERE oi.order_id = 1;
 ## À faire (exercices)
 
 - Exercices : `Exercices/07_jointures.md`
+- [Dépôt](https://github.com/Antoine07/db)

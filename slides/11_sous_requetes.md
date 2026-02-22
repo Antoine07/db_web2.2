@@ -179,3 +179,4 @@ Règle pratique :
 ## À faire (exercices)
 
 - Exercices : `Exercices/11_sous_requetes.md`
+- [Dépôt](https://github.com/Antoine07/db)

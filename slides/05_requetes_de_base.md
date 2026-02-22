@@ -263,3 +263,4 @@ FROM products;
 ## À faire (exercices)
 
 - Exercices : `Exercices/05_requetes_de_base.md`
+- [Dépôt](https://github.com/Antoine07/db)

@@ -376,3 +376,5 @@ CHECK (
 - `JSONB` rend le schéma plus flexible, mais ne remplace pas le relationnel
 - Si une donnée est souvent filtrée/triée/jointe → colonne SQL (ou index d'expression)
 - JSONB est pratique pour des "extras" variables (attributs, metadata)
+
+- [Exercices](https://github.com/Antoine07/db)

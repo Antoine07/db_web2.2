@@ -52,3 +52,4 @@ docker compose exec postgres psql -U postgres -d shop
 ## À faire (exercices)
 
 - Exercices : `Exercices/04_fil_rouge_boutique.md`
+- [Dépôt](https://github.com/Antoine07/db)

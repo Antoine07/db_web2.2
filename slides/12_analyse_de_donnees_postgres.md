@@ -147,3 +147,4 @@ FROM analytics.fact_sales;
 ## A faire
 
 - Exercice guide: `Exercices/12_analyse_de_donnees_etl.md`
+- [Dépôt](https://github.com/Antoine07/db)
