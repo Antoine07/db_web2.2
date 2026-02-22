@@ -7,95 +7,79 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 ---
 
 # 01 — Installation PostgreSQL
-## Docker Compose (TPs)
+## Version simple et testee
 
 ---
 
 ## Objectif
 
-- Lancer PostgreSQL via `docker compose`
-- Savoir se connecter en CLI (`psql`)
-- Importer la base `shop` (schéma + données `seed`)
+- demarrer PostgreSQL
+- charger la base `shop`
+- verifier que tout fonctionne
 
 ---
 
-## Pré-requis
+## 1) Demarrer les services
 
-- Docker Desktop installé 
-- Le `docker-compose.yml` du TP (dossier `stater-db/` ou votre copie)
-- [Dépôt](https://github.com/Antoine07/db)
-
----
-
-## 1) Lancer PostgreSQL (Docker Compose)
-
-Depuis le dossier qui contient le `docker-compose.yml` du TP :
+Depuis la racine du projet :
 
 ```bash
-docker compose up -d
+cd starter-db
+docker compose up -d postgres adminer
 ```
 
-Par défaut :
-- Postgres dans le conteneur : `postgres:5432`
-- Postgres sur votre machine : `localhost:5433`
+Ports par defaut :
+- Postgres : `5433`
+- Adminer : `8080`
 
----
-
-## 2) Se connecter en CLI (dans le conteneur)
+Si conflit de ports :
 
 ```bash
-docker compose exec postgres psql -U postgres -d shop
+POSTGRES_PORT=55433 ADMINER_PORT=8083 docker compose up -d postgres adminer
 ```
-
-Identifiants (TP) :
-- user : `postgres`
-- password : `postgres`
-- database : `shop`
 
 ---
 
-## 3) Vérifier que Postgres répond
-
-Dans `psql` :
-
-```sql
-SELECT version();
-```
-
-Commandes utiles `psql` :
-- `\l` (liste des bases)
-- `\dt` (tables)
-- `\d customers` (structure d'une table)
-
----
-
-## 4) Seed de la base `shop` (recommandé : script du TP)
+## 2) Charger la base (commande unique, recommande)
 
 ```bash
-docker compose exec postgres psql -U postgres -d shop -v ON_ERROR_STOP=1 -f /shared/postgres/seed.sql
+docker compose exec -T postgres \
+  psql -U postgres -d shop -v ON_ERROR_STOP=1 -f /shared/seed.sql
 ```
 
 ---
 
-## Alternative — importer depuis `data/` (si vous avez `psql` en local)
-
-Si Postgres est exposé en `5433` (docker) :
+## 3) Verifier rapidement
 
 ```bash
-psql -h 127.0.0.1 -p 5433 -U postgres -d shop -v ON_ERROR_STOP=1 -f data/shop_schema_postgres.sql
-psql -h 127.0.0.1 -p 5433 -U postgres -d shop -v ON_ERROR_STOP=1 -f data/shop_seed_postgres.sql
-psql -h 127.0.0.1 -p 5433 -U postgres -d shop
+docker compose exec -T postgres psql -U postgres -d shop -c "SELECT COUNT(*) AS products FROM products;"
+docker compose exec -T postgres psql -U postgres -d shop -c "SELECT COUNT(*) AS customers FROM customers;"
 ```
+
+Attendu :
+- `products = 8`
+- `customers = 5`
 
 ---
 
-## Adminer (optionnel)
+## Option Adminer (si vous preferez l'interface web)
 
-Ouvrez : `http://localhost:8080`
-
-Connexion typique :
-- Système : `PostgreSQL`
+1. Ouvrir `http://localhost:8080` (ou `http://localhost:8083` si port custom)
+2. Se connecter avec :
+- Systeme : `PostgreSQL`
 - Serveur : `postgres`
 - Utilisateur : `postgres`
 - Mot de passe : `postgres`
 - Base : `shop`
+3. Onglet SQL -> copier/coller le contenu de `starter-db/shared/postgres/seed.sql` -> Executer
+
+---
+
+## TL;DR
+
+Utilisez seulement ces 2 commandes :
+
+```bash
+cd starter-db && docker compose up -d postgres adminer
+docker compose exec -T postgres psql -U postgres -d shop -v ON_ERROR_STOP=1 -f /shared/seed.sql
+```
