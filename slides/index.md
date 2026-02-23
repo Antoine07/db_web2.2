@@ -59,6 +59,7 @@ Objectif : savoir interroger et faire évoluer ce schéma proprement.
 - [JSON (PostgreSQL)](https://antoine07.github.io/db_web2.2/10_json_postgres.html)
 - [Analyse de données (ETL + modélisation)](https://antoine07.github.io/db_web2.2/12_analyse_de_donnees_postgres.html)
 - [Requêtes avancées d'analyse (PostgreSQL)](https://antoine07.github.io/db_web2.2/13_requetes_avancees_analyse.html)
+- [Dataviz robots avec Python (NumPy/Pandas/Matplotlib/Seaborn)](https://antoine07.github.io/db_web2.2/14_dataviz_robots_python.html)
 - Bonus : [Normalisation](https://antoine07.github.io/db_web2.2/09_normalisation.html)
 
 ---

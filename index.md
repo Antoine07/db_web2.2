@@ -32,6 +32,7 @@
 11. Transactions — [Slides](slides/09_transactions.md) · [HTML](docs/09_transactions.html)
 12. Analyse de donnees (ETL + modelisation) — [Slides](slides/12_analyse_de_donnees_postgres.md) · [HTML](docs/12_analyse_de_donnees_postgres.html)
 13. Requetes avancees d'analyse — [Slides](slides/13_requetes_avancees_analyse.md) · [HTML](docs/13_requetes_avancees_analyse.html)
+14. Dataviz robots avec Python (NumPy/Pandas/Matplotlib/Seaborn) — [Slides](slides/14_dataviz_robots_python.md) · [HTML](docs/14_dataviz_robots_python.html)
 
 ## Bonus
 
