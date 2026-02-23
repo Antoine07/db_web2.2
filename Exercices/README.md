@@ -14,6 +14,8 @@
 - `Exercices/10_json_postgres.md`
 - `Exercices/11_sous_requetes.md`
 - `Exercices/12_analyse_de_donnees_etl.md`
+- `Exercices/13_requetes_avancees_analyse_postgres.md`
+- `Exercices/13_requetes_avancees_analyse_mysql.md`
 
 ## MongoDB
 

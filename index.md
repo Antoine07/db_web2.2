@@ -51,6 +51,8 @@
 - 10 : [Exercices/10_json_postgres.md](Exercices/10_json_postgres.md)
 - 11 : [Exercices/11_sous_requetes.md](Exercices/11_sous_requetes.md)
 - 12 : [Exercices/12_analyse_de_donnees_etl.md](Exercices/12_analyse_de_donnees_etl.md)
+- 13 (PostgreSQL) : [Exercices/13_requetes_avancees_analyse_postgres.md](Exercices/13_requetes_avancees_analyse_postgres.md)
+- 13 (MySQL) : [Exercices/13_requetes_avancees_analyse_mysql.md](Exercices/13_requetes_avancees_analyse_mysql.md)
 
 ## Corrections
 
@@ -66,6 +68,8 @@
 - 10 : [corrections/10_json_postgres.md](corrections/10_json_postgres.md)
 - 11 : [corrections/11_sous_requetes.md](corrections/11_sous_requetes.md)
 - 12 : [corrections/12_analyse_de_donnees_etl.md](corrections/12_analyse_de_donnees_etl.md)
+- 13 (PostgreSQL) : [corrections/13_requetes_avancees_analyse_postgres.md](corrections/13_requetes_avancees_analyse_postgres.md)
+- 13 (MySQL) : [corrections/13_requetes_avancees_analyse_mysql.md](corrections/13_requetes_avancees_analyse_mysql.md)
 
 ## Diagrammes (UML & pédagogiques)
 

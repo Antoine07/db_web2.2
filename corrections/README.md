@@ -16,6 +16,8 @@ Corrections détaillées par chapitre (questions + réponses + SQL).
 - `corrections/10_json_postgres.md`
 - `corrections/11_sous_requetes.md`
 - `corrections/12_analyse_de_donnees_etl.md`
+- `corrections/13_requetes_avancees_analyse_postgres.md`
+- `corrections/13_requetes_avancees_analyse_mysql.md`
 
 ## MongoDB
 
