@@ -56,11 +56,17 @@ Objectif : savoir interroger et faire évoluer ce schéma proprement.
 - [Agrégation](https://antoine07.github.io/db_web2.2/08_aggregation.html)
 - [Sous-requêtes (requêtes imbriquées)](https://antoine07.github.io/db_web2.2/11_sous_requetes.html)
 - [Transactions](https://antoine07.github.io/db_web2.2/09_transactions.html)
+
+
+---
+## Chapitre Dataviz
+
 - [JSON (PostgreSQL)](https://antoine07.github.io/db_web2.2/10_json_postgres.html)
 - [Analyse de données (ETL + modélisation)](https://antoine07.github.io/db_web2.2/12_analyse_de_donnees_postgres.html)
 - [Requêtes avancées d'analyse (PostgreSQL)](https://antoine07.github.io/db_web2.2/13_requetes_avancees_analyse.html)
 - [Dataviz robots avec Python (NumPy/Pandas/Matplotlib/Seaborn)](https://antoine07.github.io/db_web2.2/14_dataviz_robots_python.html)
 - Bonus : [Normalisation](https://antoine07.github.io/db_web2.2/09_normalisation.html)
+
 
 ---
 
