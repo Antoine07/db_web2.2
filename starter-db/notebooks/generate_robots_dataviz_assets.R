@@ -78,14 +78,61 @@ save_png("error_rate_by_zone.png", {
 })
 
 # 3bis) Downtime boxplot by robot type
+by_type <- split(df$downtime_s, df$robot_type)
+whisker_high <- sapply(by_type, function(x) boxplot.stats(x)$stats[5])
+out_count <- sapply(by_type, function(x) length(boxplot.stats(x)$out))
+n_count <- sapply(by_type, length)
+ylim_top <- max(whisker_high) * 1.05
+subtitle <- paste(
+  sprintf(
+    "%s: %d/%d (%.1f%%)",
+    names(n_count), out_count, n_count, 100 * out_count / n_count
+  ),
+  collapse = " | "
+)
+
 save_png("downtime_boxplot_by_robot_type.png", {
   boxplot(
     downtime_s ~ robot_type, data = df,
     col = "#9ecae1",
     xlab = "Type de robot", ylab = "Downtime (s)",
-    main = "Distribution du downtime par type de robot"
+    main = "Distribution du downtime par type de robot (coeur de distribution)",
+    outline = FALSE,
+    ylim = c(0, ylim_top)
+  )
+  mtext("Outliers hors cadre (regle 1.5*IQR) pour la lisibilite", side = 3, line = 0.2, cex = 0.8)
+  mtext(subtitle, side = 3, line = -0.8, cex = 0.65)
+  grid(nx = NA, ny = NULL)
+})
+
+# 3ter) Boxplot reading guide (annotated)
+# Exemple didactique avec peu d'outliers pour une lecture claire du boxplot
+set.seed(7)
+guide_x <- c(rnorm(140, mean = 95, sd = 18), 175, 182)
+guide_x <- guide_x[is.finite(guide_x)]
+
+bp <- boxplot(guide_x, plot = FALSE)
+s <- bp$stats
+
+save_png("boxplot_reading_guide.png", {
+  boxplot(
+    guide_x,
+    col = "#c6dbef",
+    border = "#2171b5",
+    ylab = "Downtime (s)",
+    main = "Comment lire un boxplot (exemple: downtime)"
   )
   grid(nx = NA, ny = NULL)
+
+  text(1.25, s[3], "Mediane (Q2)", pos = 4, cex = 0.9, col = "#08306b")
+  text(1.25, s[2], "Q1 (25%)", pos = 4, cex = 0.9, col = "#08306b")
+  text(1.25, s[4], "Q3 (75%)", pos = 4, cex = 0.9, col = "#08306b")
+  text(1.25, s[1], "Moustache basse", pos = 4, cex = 0.9, col = "#67000d")
+  text(1.25, s[5], "Moustache haute", pos = 4, cex = 0.9, col = "#67000d")
+
+  if (length(bp$out) > 0) {
+    text(0.75, max(bp$out), "Outliers", pos = 2, cex = 0.9, col = "#cb181d")
+  }
 })
 
 # 4) Correlation matrix heatmap

@@ -155,7 +155,7 @@ identifier creux/pics et les rapprocher du staffing.
 
 ## Rendu — Missions par heure
 
-<img src="assets/dataviz_robots/missions_by_hour.png" alt="Missions par heure" width="800" />
+<img src="./assets/dataviz_robots/missions_by_hour.png" alt="Missions par heure" width="800" />
 
 ---
 
@@ -177,7 +177,7 @@ si masse sous 20%, risque d'arret operationnel.
 
 ## Rendu — Distribution batterie
 
-<img src="assets/dataviz_robots/battery_distribution.png" alt="Distribution batterie" width="800" />
+<img src="./assets/dataviz_robots/battery_distribution.png" alt="Distribution batterie" width="800" />
 
 ---
 
@@ -202,15 +202,22 @@ plt.show()
 
 ## Rendu — Erreurs par zone
 
-<img src="assets/dataviz_robots/error_rate_by_zone.png" alt="Erreurs par zone" width="800" />
+<img src="./assets/dataviz_robots/error_rate_by_zone.png" alt="Erreurs par zone" width="800" />
 
 ---
 
 ## Exemple 3 bis — boxplot downtime par type de robot
 
 ```python
-sns.boxplot(data=df, x="robot_type", y="downtime_s")
-plt.title("Distribution du downtime par type de robot")
+def upper_whisker(s):
+    q1, q3 = s.quantile([0.25, 0.75])
+    iqr = q3 - q1
+    return q3 + 1.5 * iqr
+
+upper = df.groupby("robot_type")["downtime_s"].apply(upper_whisker).max()
+sns.boxplot(data=df, x="robot_type", y="downtime_s", showfliers=False)
+plt.ylim(0, upper * 1.05)
+plt.title("Distribution du downtime par type (coeur de distribution)")
 plt.xlabel("Type de robot")
 plt.ylabel("Downtime (s)")
 plt.tight_layout()
@@ -220,13 +227,47 @@ plt.show()
 Lecture:
 - mediane = ligne dans la boite
 - variabilite = hauteur de la boite (IQR)
-- outliers = points a investiguer
+- outliers masques ici pour la lisibilite
 
 ---
 
 ## Rendu — Boxplot downtime par type
 
-<img src="assets/dataviz_robots/downtime_boxplot_by_robot_type.png" alt="Boxplot downtime par type de robot" width="800" />
+<img src="./assets/dataviz_robots/downtime_boxplot_by_robot_type.png" alt="Boxplot downtime par type de robot" width="800" />
+
+---
+
+## Boxplot — lecture explicite (a retenir)
+
+- boite: de `Q1` (25%) a `Q3` (75%)
+- ligne dans la boite: `mediane` (`Q2`)
+- `IQR = Q3 - Q1`
+- moustaches: dernier point dans `[Q1 - 1.5*IQR ; Q3 + 1.5*IQR]`
+- outliers: points hors moustaches
+
+```python
+s = df.loc[df["robot_type"] == "carrier", "downtime_s"]
+q1, q2, q3 = s.quantile([0.25, 0.50, 0.75])
+iqr = q3 - q1
+low, high = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+nb_outliers = ((s < low) | (s > high)).sum()
+```
+
+Pratique conseillee:
+afficher le coeur de distribution dans le boxplot, et reporter `nb_outliers` a part.
+
+<img src="./assets/dataviz_robots/boxplot_reading_guide.png" alt="Guide de lecture boxplot" width="800" />
+
+---
+
+## Pourquoi autant d'outliers sur ce dataset ?
+
+1. La regle boxplot (`1.5 * IQR`) marque vite les queues longues.
+2. `downtime_s` est asymetrique: beaucoup de petites valeurs + quelques incidents longs.
+3. Le dataset simule des pics d'incidents (14h-16h, zone `C3`) pour la detection d'anomalies.
+
+Ordre de grandeur observe:
+- environ `241 / 5406` points (`4.46%`) classes outliers sur `downtime_s`.
 
 ---
 
@@ -249,7 +290,7 @@ correlation != causalite.
 
 ## Rendu — Correlation capteurs
 
-<img src="assets/dataviz_robots/correlation_heatmap.png" alt="Correlation capteurs" width="800" />
+<img src="./assets/dataviz_robots/correlation_heatmap.png" alt="Correlation capteurs" width="800" />
 
 ---
 
@@ -311,7 +352,7 @@ isoler les couloirs et tranches horaires critiques.
 
 ## Rendu — Heatmap erreurs zone x heure
 
-<img src="assets/dataviz_robots/error_heatmap_zone_hour.png" alt="Heatmap erreurs zone heure" width="800" />
+<img src="./assets/dataviz_robots/error_heatmap_zone_hour.png" alt="Heatmap erreurs zone heure" width="800" />
 
 ---
 
@@ -352,7 +393,7 @@ plt.show()
 
 ## Rendu — Carte de controle
 
-<img src="assets/dataviz_robots/control_chart_error_rate.png" alt="Carte de controle" width="800" />
+<img src="./assets/dataviz_robots/control_chart_error_rate.png" alt="Carte de controle" width="800" />
 
 ---
 
@@ -393,7 +434,7 @@ plt.show()
 
 ## Rendu — Score d'anomalie
 
-<img src="assets/dataviz_robots/anomaly_scatter.png" alt="Score anomalie" width="800" />
+<img src="./assets/dataviz_robots/anomaly_scatter.png" alt="Score anomalie" width="800" />
 
 ---
 
@@ -426,7 +467,7 @@ ratio > 2 = comportement degrade vs historique comparable.
 
 ## Rendu — Ecart au baseline
 
-<img src="assets/dataviz_robots/baseline_ratio_boxplot.png" alt="Ecart baseline" width="800" />
+<img src="./assets/dataviz_robots/baseline_ratio_boxplot.png" alt="Ecart baseline" width="800" />
 
 ---
 
@@ -455,7 +496,7 @@ reduire les faux positifs sans rater les vrais incidents.
 
 ## Rendu — Matrice de confusion
 
-<img src="assets/dataviz_robots/confusion_matrix.png" alt="Matrice confusion" width="800" />
+<img src="./assets/dataviz_robots/confusion_matrix.png" alt="Matrice confusion" width="800" />
 
 ---
 
