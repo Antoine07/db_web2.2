@@ -158,18 +158,6 @@ En e-commerce réel : on préfère souvent **annuler** (`status='cancelled'`) pl
 
 ---
 
-## Pourquoi ? (métier) — "annuler" vs "supprimer"
-
-<details class="answer">
-  <summary>Afficher la réponse</summary>
-
-Une commande annulée garde l'historique (paiement, stock, support, analytics).
-Une suppression peut rendre certains diagnostics impossibles (ex: "pourquoi le stock a baissé ?").
-
-</details>
-
----
-
 ## `ON DELETE CASCADE` (orders → order_items)
 
 Utile si une commande n'a aucun intérêt sans ses lignes (et qu'on autorise sa suppression).
@@ -196,46 +184,6 @@ Dans le fil rouge, `order_items` référence `products(id)` :
 - `RESTRICT` est souvent préférable
 - alternative métier : **soft delete** du produit, et/ou snapshot des infos dans `order_items`
 
----
-
-## FK + suppression
-
-- Voir ce qui "bloque" une suppression
-
-```sql
-SELECT * FROM orders WHERE customer_id = 1;
-SELECT * FROM order_items WHERE order_id = 1;
-```
-
-- Tester sans casser la base (transaction)
-```sql
-BEGIN;
-DELETE FROM customers WHERE id = 1;
-ROLLBACK;
-```
-
----
-
-## Mini-tests (à exécuter)
-
-```sql
--- Dans psql :
-\c shop
-```
-
-Tester une FK (commande "orpheline") :
-```sql
-INSERT INTO orders (customer_id, status)
-VALUES (9999, 'pending'); -- erreur attendue (FK)
-```
-
-Tester une contrainte de qualité :
-```sql
-INSERT INTO customers (email, first_name, last_name)
-VALUES ('test@exemple.com', 'Test', 'User');
-INSERT INTO customers (email, first_name, last_name)
-VALUES ('test@exemple.com', 'Test2', 'User2'); -- erreur attendue (UNIQUE)
-```
 
 ---
 
@@ -252,9 +200,4 @@ Pour empêcher le doublon "même produit dans la même commande" (sinon on aurai
 
 </details>
 
----
 
-## À faire (exercices)
-
-- Exercices : `Exercices/06_modele_relationnel.md`
-- [Dépôt](https://github.com/Antoine07/db)
