@@ -255,7 +255,7 @@ isoler les couloirs et tranches horaires critiques.
 
 ---
 
-## Exemple 7 — carte de controle (moyenne mobile + 3 sigma)
+## Exemple 7 — carte de controle (moyenne mobile + 3 sigma) 1/2
 
 ```python
 ts = (
@@ -272,6 +272,11 @@ ts["upper"] = ts["mu_rolling"] + 3 * ts["sigma_rolling"]
 ts["is_alert"] = ts["error_rate"] > ts["upper"]
 ```
 
+---
+
+## Exemple 7 — carte de controle (moyenne mobile + 3 sigma) 2/2
+
+
 ```python
 plt.plot(ts.index, ts["error_rate"], label="error_rate")
 plt.plot(ts.index, ts["mu_rolling"], label="moyenne mobile")
@@ -285,7 +290,7 @@ plt.show()
 
 ---
 
-## Exemple 8 — score d'anomalie multivariable
+## Exemple 8 — score d'anomalie multivariable 1/2
 
 Variables:
 `downtime_s`, `mission_duration_s`, `battery_pct`, `temperature_c`.
@@ -298,6 +303,11 @@ df["anomaly_score"] = np.sqrt((z ** 2).sum(axis=1))
 threshold = df["anomaly_score"].quantile(0.99)
 df["is_anomaly"] = df["anomaly_score"] >= threshold
 ```
+
+---
+
+## Exemple 8 — score d'anomalie multivariable 2/2
+
 
 ```python
 sns.scatterplot(
