@@ -79,6 +79,12 @@ sns.set_theme(style="whitegrid", context="talk")
 plt.rcParams["figure.figsize"] = (11, 6)
 ```
 
+Assets visuels du cours (deja pre-generes):
+
+```bash
+Rscript starter-db/notebooks/generate_robots_dataviz_assets.R
+```
+
 ---
 
 ## Chargement + qualite des donnees
@@ -147,6 +153,12 @@ identifier creux/pics et les rapprocher du staffing.
 
 ---
 
+## Rendu — Missions par heure
+
+<img src="assets/dataviz_robots/missions_by_hour.png" alt="Missions par heure" width="800" />
+
+---
+
 ## Exemple 2 — distribution batterie
 
 ```python
@@ -160,6 +172,12 @@ plt.show()
 
 Lecture:
 si masse sous 20%, risque d'arret operationnel.
+
+---
+
+## Rendu — Distribution batterie
+
+<img src="assets/dataviz_robots/battery_distribution.png" alt="Distribution batterie" width="800" />
 
 ---
 
@@ -182,6 +200,36 @@ plt.show()
 
 ---
 
+## Rendu — Erreurs par zone
+
+<img src="assets/dataviz_robots/error_rate_by_zone.png" alt="Erreurs par zone" width="800" />
+
+---
+
+## Exemple 3 bis — boxplot downtime par type de robot
+
+```python
+sns.boxplot(data=df, x="robot_type", y="downtime_s")
+plt.title("Distribution du downtime par type de robot")
+plt.xlabel("Type de robot")
+plt.ylabel("Downtime (s)")
+plt.tight_layout()
+plt.show()
+```
+
+Lecture:
+- mediane = ligne dans la boite
+- variabilite = hauteur de la boite (IQR)
+- outliers = points a investiguer
+
+---
+
+## Rendu — Boxplot downtime par type
+
+<img src="assets/dataviz_robots/downtime_boxplot_by_robot_type.png" alt="Boxplot downtime par type de robot" width="800" />
+
+---
+
 ## Exemple 4 — correlations capteurs
 
 ```python
@@ -196,6 +244,12 @@ plt.show()
 
 Attention:
 correlation != causalite.
+
+---
+
+## Rendu — Correlation capteurs
+
+<img src="assets/dataviz_robots/correlation_heatmap.png" alt="Correlation capteurs" width="800" />
 
 ---
 
@@ -255,6 +309,12 @@ isoler les couloirs et tranches horaires critiques.
 
 ---
 
+## Rendu — Heatmap erreurs zone x heure
+
+<img src="assets/dataviz_robots/error_heatmap_zone_hour.png" alt="Heatmap erreurs zone heure" width="800" />
+
+---
+
 ## Exemple 7 — carte de controle (moyenne mobile + 3 sigma) 1/2
 
 ```python
@@ -287,6 +347,12 @@ plt.title("Detection d'anomalies temporelles sur le taux d'erreur")
 plt.tight_layout()
 plt.show()
 ```
+
+---
+
+## Rendu — Carte de controle
+
+<img src="assets/dataviz_robots/control_chart_error_rate.png" alt="Carte de controle" width="800" />
 
 ---
 
@@ -325,6 +391,12 @@ plt.show()
 
 ---
 
+## Rendu — Score d'anomalie
+
+<img src="assets/dataviz_robots/anomaly_scatter.png" alt="Score anomalie" width="800" />
+
+---
+
 ## Exemple 9 — baseline par robot et ecart relatif
 
 ```python
@@ -352,6 +424,12 @@ ratio > 2 = comportement degrade vs historique comparable.
 
 ---
 
+## Rendu — Ecart au baseline
+
+<img src="assets/dataviz_robots/baseline_ratio_boxplot.png" alt="Ecart baseline" width="800" />
+
+---
+
 ## Exemple 10 — matrice de confusion (si labels incidents)
 
 Si vous avez une verite terrain:
@@ -372,6 +450,12 @@ plt.show()
 
 Objectif:
 reduire les faux positifs sans rater les vrais incidents.
+
+---
+
+## Rendu — Matrice de confusion
+
+<img src="assets/dataviz_robots/confusion_matrix.png" alt="Matrice confusion" width="800" />
 
 ---
 
