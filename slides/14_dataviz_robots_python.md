@@ -7,32 +7,17 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 ---
 
 # 14 — Dataviz robots avec Python
-## Numpy + Pandas + Matplotlib + Seaborn
 
 ---
 
 ## Positionnement du chapitre
 
-Suite directe du cours "DB orientees donnees robots":
 - extraction SQL propre
 - mise en DataFrame
 - visualisation pour decision operationnelle
 
 Objectif:
 `question metier -> graphique lisible -> action`
-
----
-
-## Objectifs pedagogiques (L3)
-
-A la fin de la journee, vous savez:
-- nettoyer un dataset robots dans `pandas`
-- choisir le bon type de graphique
-- utiliser `matplotlib` pour le controle fin
-- utiliser `seaborn` pour l'analyse rapide
-- detecter des anomalies avec des seuils statistiques
-- presenter des insights actionnables
-
 
 ---
 
@@ -79,11 +64,6 @@ sns.set_theme(style="whitegrid", context="talk")
 plt.rcParams["figure.figsize"] = (11, 6)
 ```
 
-Assets visuels du cours (deja pre-generes):
-
-```bash
-Rscript starter-db/notebooks/generate_robots_dataviz_assets.R
-```
 
 ---
 
@@ -102,7 +82,7 @@ df = df[df["battery_pct"].between(0, 100)]
 
 ---
 
-## Features utiles pour la viz
+## Features utiles pour la dataviz
 
 ```python
 df["hour"] = df["timestamp"].dt.hour
