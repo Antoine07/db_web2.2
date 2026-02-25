@@ -358,26 +358,9 @@ Comme toujours : on indexe ce qu'on requête vraiment.
 
 ---
 
-## Pattern "prod" : colonne générée pour une clé JSON fréquente
-
-Si on filtre **tout le temps** sur la même clé JSON, une colonne générée est pratique :
-
-```sql
-ALTER TABLE orders
-ADD COLUMN payment_provider TEXT
-GENERATED ALWAYS AS (metadata->>'paymentProvider') STORED;
-
-CREATE INDEX idx_orders_payment_provider
-ON orders (payment_provider);
-```
-
-On garde la flexibilité de `metadata`, mais on rend la clé "principale" simple à indexer/req.
-
----
-
 ## Un minimum de "validation" avec `CHECK` (simple)
 
-Tu peux imposer une règle sur une clé JSON :
+On peut imposer une règle sur une clé JSON :
 
 ```sql
 ALTER TABLE orders
