@@ -62,9 +62,9 @@ GROUP BY c.id, c.email;
 SELECT
   p.name AS product_name,
   p.price,
-  cat.name AS category_name
+  ca.name AS category_name
 FROM products p
-JOIN categories cat ON cat.id = p.category_id;
+JOIN categories cat ON ca.id = p.category_id;
 ```
 
 ## Exercice 5 — Piège `WHERE` vs `ON`
@@ -121,5 +121,5 @@ FROM orders o
 JOIN order_items oi ON oi.order_id = o.id
 JOIN products p ON p.id = oi.product_id
 WHERE o.customer_id = 1
-ORDER BY o.ordered_at DESC, o.id DESC, p.id ASC;
+ORDER BY o.ordered_at DESC;
 ```

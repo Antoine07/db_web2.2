@@ -47,6 +47,14 @@ ORDER BY o.ordered_at DESC;
 ```
 
 ---
+## INNER JOIN - REMARQUE
+
+Réduit le périmètre d’analyse.
+
+Il ne "perd" rien par erreur.
+Il choisit un sous-ensemble.
+
+---
 
 ## `LEFT JOIN` (tout A)
 
@@ -147,7 +155,7 @@ JOIN products p ON p.id = oi.product_id;
 ## Ordre logique de la requête complètée avec JOIN
 
 - FROM + JOIN (+ ON) → on construit le jeu de lignes (et pour un LEFT JOIN, on “complète” avec des NULL
-    quand il n’y a pas de match)
+    quand il n'y a pas de match)
 - WHERE → on filtre les lignes obtenues
 - GROUP BY → on regroupe
 - HAVING → on filtre les groupes
@@ -158,7 +166,7 @@ JOIN products p ON p.id = oi.product_id;
 ---
 
 
-## Exemple "piège" (à tester)
+## Exemple "piège" 
 
 ```sql
 -- Objectif : garder tous les clients et afficher leurs commandes payées si elles existent
@@ -170,7 +178,7 @@ WHERE o.status = 'paid';
 
 ---
 
-## Version correcte (à tester)
+## Version correcte 
 
 ```sql
 SELECT c.email, o.id AS paid_order_id
@@ -180,17 +188,14 @@ LEFT JOIN orders o
  AND o.status = 'paid';
 ```
 
----
+**Une ligne de droite est jointe si A ET B sont vrais.**
+**Si aucune ligne ne satisfait A ET B → les colonnes de droite = NULL.**
 
-## N–N (table de liaison)
+NULL signifie :
 
-Produits d’une commande :
-```sql
-SELECT p.id, p.name, oi.quantity
-FROM order_items oi
-JOIN products p ON p.id = oi.product_id
-WHERE oi.order_id = 1;
-```
+> "Aucune correspondance trouvée". **la jointure n'a rien pu rattacher.**
+
+
 
 ---
 

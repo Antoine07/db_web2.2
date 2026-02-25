@@ -1,11 +1,14 @@
 -- Fil rouge "shop" (Postgres 17+)
 -- Objectif : fournir le schéma + données de départ du fil rouge `shop`.
 -- Exécution : psql -U postgres -d shop -v ON_ERROR_STOP=1 -f /shared/postgres/seed.sql
-
 DROP TABLE IF EXISTS order_items;
+
 DROP TABLE IF EXISTS orders;
+
 DROP TABLE IF EXISTS products;
+
 DROP TABLE IF EXISTS customers;
+
 DROP TABLE IF EXISTS categories;
 
 CREATE TABLE categories (
@@ -26,8 +29,7 @@ CREATE TABLE products (
   attributes JSONB NULL,
   CONSTRAINT pk_products PRIMARY KEY (id),
   CONSTRAINT uq_products_sku UNIQUE (sku),
-  CONSTRAINT fk_products_category
-    FOREIGN KEY (category_id) REFERENCES categories(id),
+  CONSTRAINT fk_products_category FOREIGN KEY (category_id) REFERENCES categories(id),
   CONSTRAINT chk_products_price CHECK (price >= 0),
   CONSTRAINT chk_products_stock CHECK (stock >= 0)
 );
@@ -51,13 +53,16 @@ CREATE TABLE orders (
   status TEXT NOT NULL DEFAULT 'pending',
   ordered_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT pk_orders PRIMARY KEY (id),
-  CONSTRAINT fk_orders_customer
-    FOREIGN KEY (customer_id) REFERENCES customers(id),
-  CONSTRAINT chk_orders_status CHECK (status IN ('pending', 'paid', 'shipped', 'cancelled'))
+  CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customers(id),
+  CONSTRAINT chk_orders_status CHECK (
+    status IN ('pending', 'paid', 'shipped', 'cancelled')
+  )
 );
 
 CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+
 CREATE INDEX idx_orders_status ON orders(status);
+
 CREATE INDEX idx_orders_ordered_at ON orders(ordered_at);
 
 CREATE TABLE order_items (
@@ -66,47 +71,100 @@ CREATE TABLE order_items (
   quantity INT NOT NULL,
   unit_price NUMERIC(10, 2) NOT NULL,
   CONSTRAINT pk_order_items PRIMARY KEY (order_id, product_id),
-  CONSTRAINT fk_order_items_order
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-  CONSTRAINT fk_order_items_product
-    FOREIGN KEY (product_id) REFERENCES products(id),
+  CONSTRAINT fk_order_items_product FOREIGN KEY (product_id) REFERENCES products(id),
   CONSTRAINT chk_order_items_quantity CHECK (quantity > 0),
-  CONSTRAINT chk_order_items_unit_price CHECK (unit_price >= 0)
+  CONSTRAINT chk_order_items_unit_price CHECK (unit_price >= 0) ,
+  CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_order_items_product_id ON order_items(product_id);
 
-INSERT INTO categories (id, name) VALUES
+INSERT INTO
+  categories (id, name)
+VALUES
   (1, 'Hauts'),
   (2, 'Pantalons'),
   (3, 'Chaussures');
 
-INSERT INTO products (id, category_id, name, sku, price, stock) VALUES
-  (1, 1, 'T-shirt basique noir', 'TOP-TS-001', 14.00, 200),
-  (2, 1, 'Sweat à capuche gris', 'TOP-HOOD-001', 49.00, 70),
-  (3, 2, 'Jean brut slim', 'PANT-JEANS-001', 69.00, 55),
+INSERT INTO
+  products (id, category_id, name, sku, price, stock)
+VALUES
+  (
+    1,
+    1,
+    'T-shirt basique noir',
+    'TOP-TS-001',
+    14.00,
+    200
+  ),
+  (
+    2,
+    1,
+    'Sweat à capuche gris',
+    'TOP-HOOD-001',
+    49.00,
+    70
+  ),
+  (
+    3,
+    2,
+    'Jean brut slim',
+    'PANT-JEANS-001',
+    69.00,
+    55
+  ),
   (4, 2, 'Chino beige', 'PANT-CHINO-001', 59.00, 40),
   (5, 2, 'Jogging noir', 'PANT-JOG-001', 39.00, 25),
-  (6, 3, 'Baskets blanches', 'SHOE-SNK-001', 89.00, 35),
+  (
+    6,
+    3,
+    'Baskets blanches',
+    'SHOE-SNK-001',
+    89.00,
+    35
+  ),
   (7, 3, 'Bottines cuir', 'SHOE-BOT-001', 129.00, 0),
   (8, 3, 'Sandales', 'SHOE-SAND-001', 29.00, 60);
 
-INSERT INTO customers (id, email, first_name, last_name, phone) VALUES
+INSERT INTO
+  customers (id, email, first_name, last_name, phone)
+VALUES
   (1, 'sam@demo.test', 'Sam', 'Lopez', NULL),
-  (2, 'lea@demo.test', 'Léa', 'Martin', '+33 6 00 00 00 01'),
+  (
+    2,
+    'lea@demo.test',
+    'Léa',
+    'Martin',
+    '+33 6 00 00 00 01'
+  ),
   (3, 'nina@demo.test', 'Nina', 'Diallo', NULL),
-  (4, 'tom@demo.test', 'Tom', 'Nguyen', '+33 6 00 00 00 02'),
-  (5, 'alex@demo.test', 'Alex', 'Bernard', NULL);
+  (
+    4,
+    'tom@demo.test',
+    'Tom',
+    'Nguyen',
+    '+33 6 00 00 00 02'
+  ),
+  (5, 'alex@demo.test', 'Alex', 'Bernard', NULL),
+  (6, 'alan@demo.test', 'Alan', 'Turing', NULL),
+  (7, 'alice@demo.test', 'Alice', 'Pays', NULL)
+  ;
 
-INSERT INTO orders (id, customer_id, status, ordered_at) VALUES
-  (1, 1, 'paid',     '2025-01-02 10:15:00'),
-  (2, 1, 'shipped',  '2025-01-10 14:20:00'),
-  (3, 2, 'pending',  '2025-01-11 09:05:00'),
-  (4, 3, 'paid',     '2025-01-15 18:40:00'),
-  (5, 4, 'cancelled','2025-02-01 12:00:00'),
-  (6, 2, 'paid',     '2025-02-03 16:30:00');
+INSERT INTO
+  orders (id, customer_id, status, ordered_at)
+VALUES
+  (1, 1, 'paid', '2025-01-02 10:15:00'),
+  (2, 1, 'shipped', '2025-01-10 14:20:00'),
+  (3, 2, 'pending', '2025-01-11 09:05:00'),
+  (4, 3, 'paid', '2025-01-15 18:40:00'),
+  (5, 4, 'cancelled', '2025-02-01 12:00:00'),
+  (6, 2, 'paid', '2025-02-03 16:30:00'),
+  (7, 6, 'pending', '2025-02-11 13:00:00'),
+  (8, 7, 'shipped', '2025-03-01 14:00:00');
 
-INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
+INSERT INTO
+  order_items (order_id, product_id, quantity, unit_price)
+VALUES
   (1, 1, 1, 14.00),
   (1, 4, 1, 59.00),
   (2, 3, 1, 69.00),
@@ -119,32 +177,55 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES
   (5, 6, 1, 89.00),
   (6, 1, 1, 14.00),
   (6, 2, 1, 49.00),
-  (6, 6, 3, 89.00);
+  (6, 6, 3, 89.00),
+  (7, 6, 3, 10.00),
+  (8, 8, 2, 15.20);
 
 -- Évolution JSON (inspirée de `data/shop_json_evolution.sql`)
-UPDATE products
-SET attributes = jsonb_build_object(
-  'color', 'black',
-  'size', 'M',
-  'material', 'cotton',
-  'tags', jsonb_build_array('basic', 'cotton')
-)
-WHERE id = 1;
+UPDATE
+  products
+SET
+  attributes = jsonb_build_object(
+    'color',
+    'black',
+    'size',
+    'M',
+    'material',
+    'cotton',
+    'tags',
+    jsonb_build_array('basic', 'cotton')
+  )
+WHERE
+  id = 1;
 
-UPDATE products
-SET attributes = jsonb_build_object(
-  'waist', 32,
-  'length', 32,
-  'fit', 'slim',
-  'material', 'denim'
-)
-WHERE id = 3;
+UPDATE
+  products
+SET
+  attributes = jsonb_build_object(
+    'waist',
+    32,
+    'length',
+    32,
+    'fit',
+    'slim',
+    'material',
+    'denim'
+  )
+WHERE
+  id = 3;
 
-UPDATE products
-SET attributes = jsonb_build_object(
-  'size_eu', 42,
-  'color', 'white',
-  'material', 'leather',
-  'waterproof', to_jsonb(false)
-)
-WHERE id = 6;
+UPDATE
+  products
+SET
+  attributes = jsonb_build_object(
+    'size_eu',
+    42,
+    'color',
+    'white',
+    'material',
+    'leather',
+    'waterproof',
+    to_jsonb(false)
+  )
+WHERE
+  id = 6;
