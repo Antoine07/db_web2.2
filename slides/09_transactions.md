@@ -106,6 +106,8 @@ Si une des requêtes échoue (ex : `product_id` inexistant → FK), alors :
 - la transaction passe en état "erreur"
 - on doit faire un `ROLLBACK` (sinon on ne peut plus rien exécuter dans cette transaction)
 
+---
+
 ```sql
 BEGIN;
 
