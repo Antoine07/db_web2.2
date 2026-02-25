@@ -170,7 +170,7 @@ WHERE attributes @> '{"material":"cotton"}'::jsonb;
 ```sql
 SELECT id, name
 FROM products
-WHERE attributes ? 'tags';
+WHERE attributes ?? 'tags';
 ```
 
 ---
