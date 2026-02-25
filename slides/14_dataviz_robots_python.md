@@ -128,7 +128,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-Lecture:
 identifier creux/pics et les rapprocher du staffing.
 
 ---
@@ -150,7 +149,6 @@ plt.tight_layout()
 plt.show()
 ```
 
-Lecture:
 si masse sous 20%, risque d'arret operationnel.
 
 ---
@@ -204,10 +202,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-Lecture:
-- mediane = ligne dans la boite
-- variabilite = hauteur de la boite (IQR)
-- outliers masques ici pour la lisibilite
+La mediane = ligne dans la boite, la  variabilite = hauteur de la boite (IQR). Les outliers sont masques ici pour la lisibilite.
 
 ---
 
