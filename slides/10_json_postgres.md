@@ -215,7 +215,7 @@ Si on a un tableau `tags` :
 SELECT p.id, p.name, t.tag
 FROM products p
 CROSS JOIN LATERAL jsonb_array_elements_text(p.attributes->'tags') AS t(tag)
-WHERE p.attributes ? 'tags';
+WHERE p.attributes ?? 'tags';
 ```
 
 ---
@@ -227,7 +227,7 @@ Sur un tableau, `?` fonctionne aussi pour tester un élément string :
 ```sql
 SELECT id, name
 FROM products
-WHERE attributes->'tags' ? 'cotton';
+WHERE attributes->'tags' ?? 'cotton';
 ```
 
 Alternative (pattern "contains" JSON) :
@@ -267,6 +267,25 @@ Ici, `tracking` est un objet, et on crée `tracking.source` si absent.
 
 ---
 
+## Mettre à jour une clé imbriquée : `jsonb_set` + chemin avec l'option false
+
+
+```sql
+UPDATE orders
+SET metadata = jsonb_set(
+  metadata,
+  '{tracking,source}',
+  '"instagram"',
+  false
+)
+WHERE id = 1;
+```
+
+Ici si tracking ou source n’existe pas →
+👉 AUCUNE modification
+
+---
+
 ## Supprimer une clé : opérateur `-`
 
 ```sql
@@ -275,7 +294,7 @@ SET attributes = attributes - 'size'
 WHERE id = 6;
 ```
 
-Tu peux aussi supprimer plusieurs clés :
+- Supprimer plusieurs clés
 
 ```sql
 UPDATE products
