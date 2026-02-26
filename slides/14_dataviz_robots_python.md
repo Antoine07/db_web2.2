@@ -12,7 +12,6 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 
 ## Positionnement du chapitre
 
-- extraction SQL propre
 - mise en DataFrame
 - visualisation pour decision operationnelle
 
@@ -33,22 +32,93 @@ Questions:
 
 ---
 
-## Schema de donnees minimal
+# Nature et Structure des Données
 
-Colonnes:
-- `timestamp`, `robot_id`, `robot_type`, `zone`
-- `task_type`, `mission_duration_s`, `downtime_s`
-- `battery_pct`, `speed_mps`, `temperature_c`
-- `error_code`, `mission_status`
+Dataset de **logs opérationnels de robots logistiques**.
 
-Bon grain:
-1 ligne = 1 mission robot.
+Chaque ligne représente :
+
+> Une mission exécutée par un robot à un instant donné.
+
+---
+
+## Structure des données
+
+### Dimensions
+
+- **Temps** : `timestamp`
+- **Robot** : `robot_id`, `robot_type`
+- **Localisation** : `zone`
+- **Processus** : `task_type`
+
+---
+
+### Indicateurs opérationnels
+
+- Durée mission : `mission_duration_s`
+- Temps d'arrêt : `downtime_s`
+- Batterie : `battery_pct`
+- Vitesse : `speed_mps`
+- Température : `temperature_c`
+
+---
+
+### Fiabilité
+
+- `error_code`
+- `mission_status`
+- `incident_label`
+
+---
+
+## Type de dataset
+
+Logs événementiels horodatés
+→ Exploitables en analyse temporelle, performance et fiabilité.
+
+---
+
+# Exploitation & KPI Potentiels
+
+- Missions par heure / zone
+- Durée moyenne par type de tâche
+- Charge par robot
+
+---
+
+## Efficacité
+
+Exemple de `KPI` (Key Performance Indicator)
+
+```
+efficiency = mission_duration / (mission_duration + downtime)
+```
+
+- Robots les plus performants
+- Zones à friction
+
+---
+
+## Fiabilité
+
+- Taux d'erreur global
+- Taux d'incident par robot
+- Corrélation batterie ↔ erreurs
+
+---
+
+##  Potentiel analytique
+
+- Monitoring temps réel
+- Détection d'anomalies
+- Maintenance prédictive
+- Optimisation des opérations
 
 ---
 
 ## Pipeline technique
 
-`SQL/Postgres -> CSV/API -> Pandas -> Dataviz -> recommandations`
+`CSV/API -> Pandas -> Dataviz -> recommandations`
 
 ```python
 import numpy as np
@@ -60,24 +130,106 @@ import seaborn as sns
 Reglage style:
 
 ```python
-sns.set_theme(style="whitegrid", context="talk")
+# syle et context taille de la police
+sns.set_theme(style="whitegrid", context="notebook")
+# 11x6 → bon ratio pour affichage écran / 16:9, meilleure lisibilité
 plt.rcParams["figure.figsize"] = (11, 6)
 ```
 
+---
+
+## Chargement des données - sans hypothèse
+
+```python
+from pathlib import Path
+
+candidates = [
+    Path('../../data/robots_missions.csv'),
+]
+
+# Sans hyptohèse
+robots = pd.read_csv(candidates[0])
+robots.head()
+robots.info()
+robots.columns
+robots.dtypes
+```
+
+
+---
+## Transformation des données `to_datetime`
+
+```python
+robots["timestamp"] = pd.to_datetime(robots["timestamp"], errors="coerce")
+# errors="coerce" → transforme les erreurs en Nat 
+
+robots["timestamp"].isna().sum() > 0 and "error"
+```
+
+---
+## Exemple de transformation
+
+```python
+
+df = pd.DataFrame({
+    "timestamp": ["2025-01-01", "invalid_date"]
+})
+
+df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+
+print(df)
+print(df.dtypes)
+
+```
+
+## Application `to_numeric`
+
+> Transformez les valeurs en données numériques, même si Python infère déjà certaines valeurs tout seul.
+
+---
+
+## Solution 
+
+```python
+# Types numériques attendus
+num_cols = ['mission_duration_s', 'downtime_s', 'battery_pct', 'speed_mps', 'temperature_c']
+for c in num_cols:
+    robots[c] = pd.to_numeric(df[c], errors='coerce')
+
+```
 
 ---
 
 ## Chargement + qualite des donnees
 
 ```python
-df = pd.read_csv("data/robots_missions.csv", parse_dates=["timestamp"])
+# Suppression des doublons
+robots = robots.drop_duplicates()
 
-df = df.drop_duplicates()
-df["battery_pct"] = pd.to_numeric(df["battery_pct"], errors="coerce")
-df["mission_duration_s"] = pd.to_numeric(df["mission_duration_s"], errors="coerce")
+# Conserver uniquement les missions dont la durée est strictement positive
+robots = robots[robots["mission_duration_s"] > 0]
 
-df = df[df["mission_duration_s"] > 0]
-df = df[df["battery_pct"].between(0, 100)]
+# Conserver uniquement les pourcentages de batterie valides (entre 0 et 100 inclus)
+robots = robots[robots["battery_pct"].between(0, 100)]
+```
+
+---
+## Renommage des colonnes 
+
+```python
+robots = robots.rename(columns={
+    "timestamp": "event_ts",
+    "robot_id" : "id",
+    "robot_type": "type",
+    "task_type": "task",
+    "mission_duration_s": "duration",
+    "downtime_s": "downtime",
+    "battery_pct": "battery_level",
+    "temperature_c": "temperature",
+    "mission_status": "status",
+    "incident_label": "incident",
+    "error_code" : "error"
+})
 ```
 
 ---
@@ -85,24 +237,43 @@ df = df[df["battery_pct"].between(0, 100)]
 ## Features utiles pour la dataviz
 
 ```python
-df["hour"] = df["timestamp"].dt.hour
-df["day"] = df["timestamp"].dt.date
-df["is_error"] = np.where(df["error_code"].notna(), 1, 0)
-df["efficiency"] = df["mission_duration_s"] / (df["downtime_s"] + 1)
-```
-
-Aggregats de base:
-
-```python
-kpi_hour = df.groupby("hour", as_index=False).agg(
-    missions=("robot_id", "count"),
-    error_rate=("is_error", "mean"),
-    avg_battery=("battery_pct", "mean"),
-)
+robots["hour"] = robots["event_ts"].dt.hour
+robots["day"] = robots["event_ts"].dt.date
+robots["is_error"] = np.where(robots["error"].notna(), 1, 0)
+# Pour ne pas diviser par zéro
+robots = robots[robots["downtime"] > 0]
+robots["efficiency"] = robots["duration"] / robots["downtime"]
 ```
 
 ---
 
+# Astuce sélectionner uniquement certaine(s) colonne(s)
+
+```python
+robots[["id", "zone", "duration"]]
+```
+
+---
+
+# Agrégation 
+
+```python
+df = pd.DataFrame({
+    "product": ["A", "A", "B", "B", "B"],
+    "quantity": [10, 15, 5, 8, 7]
+})
+
+df.groupby("product").agg(
+    total =("quantity", "sum")
+)
+```
+
+| produit | total_quantite |
+|----------|---------------|
+| A        | 25            |
+| B        | 20            |
+
+---
 ## Choisir le bon graphique
 
 - Evolution temporelle -> `lineplot`
@@ -111,12 +282,31 @@ kpi_hour = df.groupby("hour", as_index=False).agg(
 - Relation entre 2 variables -> `scatterplot`
 - Correlation multi-variables -> `heatmap`
 
-Regle:
-un graphique = une question principale.
+
+> un graphique = une question principale.
+
 
 ---
 
-## Exemple 1 — charge horaire de la flotte
+## Aggregats de base
+
+Regrouper toutes les missions qui ont eu lieu à la même heure de la journée.
+
+```python
+kpi_hour = robots.groupby("hour", as_index=False).agg(
+    missions=("id", "count"),
+    error_rate=("is_error", "mean"),
+    avg_battery=("battery_level", "mean"),
+)
+```
+
+- missions → combien de missions ont été faites par heure
+- error_rate → quel pourcentage de missions ont eu une erreur par heure
+- avg_battery → niveau moyen de batterie par heure
+
+---
+
+## charge horaire de la flotte
 
 ```python
 plt.plot(kpi_hour["hour"], kpi_hour["missions"], marker="o")
@@ -128,7 +318,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-identifier creux/pics et les rapprocher du staffing.
+> identifier creux/pics et les rapprocher du staffing.
 
 ---
 
@@ -138,10 +328,10 @@ identifier creux/pics et les rapprocher du staffing.
 
 ---
 
-## Exemple 2 — distribution batterie
+## distribution batterie
 
 ```python
-sns.histplot(df, x="battery_pct", bins=20, kde=True, color="#1f77b4")
+sns.histplot(robots, x="battery_level", bins=20, kde=True, color="#1f77b4")
 plt.title("Distribution du niveau de batterie")
 plt.xlabel("Batterie (%)")
 plt.ylabel("Frequence")
@@ -153,17 +343,138 @@ si masse sous 20%, risque d'arret operationnel.
 
 ---
 
+`sns.histplot(robots, x="battery_level", bins=20, kde=True, color="#1f77b4")`
+
+- robots → le DataFrame
+- x="battery_level" → on analyse cette colonne
+- bins=20 → on divise l'axe en 20 intervalles
+- kde=True → ajoute une courbe lissée (tendance)
+- color → couleur du graphique
+
+---
+
 ## Rendu — Distribution batterie
 
 <img src="./assets/dataviz_robots/battery_distribution.png" alt="Distribution batterie" width="800" />
 
 ---
 
-## Exemple 3 — erreurs par zone
+>Un petit calcul pour savoir combien de batteries sont à 100%
+
+```python
+(robots["battery_level"] == 100).mean()
+```
+
+---
+
+# Bilan
+
+Les graphiques mettent en évidence une concentration non négligeable de batteries à 100 % (environ 23 % des missions).
+
+Cela peut s'expliquer par :
+
+- une politique de recharge systématique avant certaines plages horaires,
+- un comportement spécifique lié à certains robots,
+- ou certains types de tâches.
+
+Il convient donc d'analyser la répartition :
+
+- par heure,
+- par zone,
+- par robot,
+
+afin de déterminer s'il s'agit d'un fonctionnement normal de l'exploitation ou d'un biais dans la collecte des données.
+
+---
+
+## Questions
+
+- Les erreurs augmentent-elles lorsque la batterie est faible ?
+- Les erreurs sont-elles indépendantes du niveau de batterie ?
+- Le pic à 100 % a-t-il un impact sur les incidents ?
+
+---
+
+## Construire un graphique pour tester ces hypothèses
+
+```python
+# Création des tranches de batterie
+robots["battery_bin"] = pd.cut(
+    robots["battery_level"],
+    bins=[0, 20, 50, 80, 100],
+    labels=["0-20%", "20-50%", "50-80%", "80-100%"]
+)
+```
+
+> Proposez un graphique permettant d'évaluer la relation entre le niveau de batterie et le taux d'erreur.
+
+---
+
+# La solution
+
+```python
+error_by_battery = (
+    robots.groupby("battery_bin", as_index=False)["is_error"]
+           .mean()
+)
+
+error_by_battery["is_error"] *= 100
+
+plt.figure()
+plt.bar(
+    error_by_battery["battery_bin"].astype(str),
+    error_by_battery["is_error"]
+)
+plt.xlabel("Tranche de batterie")
+plt.ylabel("Taux d'erreur (%)")
+plt.title("Taux d'erreur selon le niveau de batterie")
+plt.show()
+```
+
+---
+
+# Conclusion
+
+Cela suggère que :
+- une batterie faible augmente le risque d'erreur,
+- l'autonomie devient un facteur opérationnel critique,
+- la gestion de la recharge pourrait être optimisée.
+
+---
+
+## Présentation rapide du barplot (général)
+
+Un **barplot** est un graphique en barres qui permet de comparer des valeurs entre différentes catégories.
+
+- Chaque barre représente une catégorie (ex : une zone).
+- La longueur de la barre correspond à une valeur (ex : un taux).
+- Il sert à comparer visuellement des performances ou des indicateurs.
+
+>C'est un outil simple, très lisible, idéal pour identifier des écarts.
+
+---
+
+## Exercice d'application
+
+Analyser la performance opérationnelle par zone.
+
+### Consigne
+
+1. Calculez le taux d'erreur moyen par zone.
+2. Triez les zones du taux d'erreur le plus élevé au plus faible.
+3. Représentez le résultat sous forme de barplot horizontal.
+4. Interprétez les zones les plus critiques.
+
+- La variable `is_error` est binaire (0 = pas d'erreur, 1 = erreur).
+- La moyenne d'une variable binaire correspond à un taux.
+
+---
+
+## Solution attendue
 
 ```python
 zone_err = (
-    df.groupby("zone", as_index=False)["is_error"]
+    robots.groupby("zone", as_index=False)["is_error"]
       .mean()
       .sort_values("is_error", ascending=False)
 )
@@ -176,6 +487,7 @@ plt.tight_layout()
 plt.show()
 ```
 
+
 ---
 
 ## Rendu — Erreurs par zone
@@ -184,16 +496,85 @@ plt.show()
 
 ---
 
-## Exemple 3 bis — boxplot downtime par type de robot
+##  boxplot mesurer la distribution
+
+>Le boxplot montre comment les valeurs sont distribuées et permet de comparer des groupes en un coup d'œil.
+
+Pour chaque classe :
+- La ligne au milieu → note médiane
+- La boîte → 50 % des notes
+- Les moustaches → dispersion globale
+- Les points isolés → valeurs extrêmes
+
+---
+
+On définit un coefficient `1.5 × IQR`, c'est une règle conventionnelle pour définir la limite au-delà de laquelle une valeur est considérée comme atypique.
+
+Il permet d'identifier les outliers sans être trop sensible aux petites variations normales de la distribution.
+
+---
+
+## Que fais cette fonction ?
 
 ```python
 def upper_whisker(s):
     q1, q3 = s.quantile([0.25, 0.75])
     iqr = q3 - q1
     return q3 + 1.5 * iqr
+```
 
-upper = df.groupby("robot_type")["downtime_s"].apply(upper_whisker).max()
-sns.boxplot(data=df, x="robot_type", y="downtime_s", showfliers=False)
+>Testez cette fonction sur la `Série` suivante et concluez.
+
+```python
+s = pd.Series([10, 12, 13, 15, 18, 19, 20, 100])
+```
+
+---
+
+
+# Exercice — Analyse de la variabilité du downtime 1/3
+
+>Analyser la distribution du temps d'arrêt (`downtime`) selon le type de robot afin d'identifier :
+
+- la performance typique,
+- la variabilité,
+- et d'éventuels comportements anormaux.
+
+---
+
+# Exercice — Analyse de la variabilité du downtime 2/3
+
+1. Calculez la limite supérieure théorique (upper whisker) du downtime pour chaque type de robot en utilisant la règle : `Q3 + 1.5 X IQR`
+
+2. Déterminez la limite maximale parmi les types afin de fixer un seuil d'affichage cohérent.
+
+3. Construisez un boxplot du downtime par type de robot :
+   - en masquant les outliers,
+   - en limitant l'axe vertical au cœur de la distribution.
+
+4. Interprétez :
+   - la médiane,
+   - la variabilité,
+   - les différences entre types de robots.
+
+---
+
+## Rappels Analyse de la variabilité du downtime 3/3
+
+- **La médiane** = ligne horizontale dans la boîte
+- **La variabilité** = hauteur de la boîte (IQR = Q3 − Q1)
+- **Les moustaches** = plage des valeurs normales
+- **Les outliers** = valeurs extrêmes (masquées ici pour la lisibilité)
+
+
+---
+
+## Solution
+
+```python
+
+upper = robots.groupby("type")["downtime"].apply(upper_whisker).max()
+sns.boxplot(data=robots, x="type", y="downtime", showfliers=False)
 plt.ylim(0, upper * 1.05)
 plt.title("Distribution du downtime par type (coeur de distribution)")
 plt.xlabel("Type de robot")
@@ -206,13 +587,13 @@ La mediane = ligne dans la boite, la  variabilite = hauteur de la boite (IQR). L
 
 ---
 
-## Rendu — Boxplot downtime par type
+##Boxplot downtime par type
 
 <img src="./assets/dataviz_robots/downtime_boxplot_by_robot_type.png" alt="Boxplot downtime par type de robot" width="800" />
 
 ---
 
-## Boxplot — lecture explicite (a retenir)
+## Boxplot — lecture explicite 
 
 - boite: de `Q1` (25%) a `Q3` (75%)
 - ligne dans la boite: `mediane` (`Q2`)
@@ -243,295 +624,3 @@ afficher le coeur de distribution dans le boxplot, et reporter `nb_outliers` a p
 
 Ordre de grandeur observe:
 - environ `241 / 5406` points (`4.46%`) classes outliers sur `downtime_s`.
-
----
-
-## Exemple 4 — correlations capteurs
-
-```python
-num_cols = ["battery_pct", "speed_mps", "temperature_c", "mission_duration_s", "downtime_s"]
-corr = df[num_cols].corr(numeric_only=True)
-
-sns.heatmap(corr, annot=True, fmt=".2f", cmap="coolwarm", vmin=-1, vmax=1)
-plt.title("Matrice de correlation")
-plt.tight_layout()
-plt.show()
-```
-
-Attention:
-correlation != causalite.
-
----
-
-## Rendu — Correlation capteurs
-
-<img src="./assets/dataviz_robots/correlation_heatmap.png" alt="Correlation capteurs" width="800" />
-
----
-
-## Exemple 5 — Seaborn facettes
-
-```python
-sns.relplot(
-    data=df,
-    x="battery_pct",
-    y="mission_duration_s",
-    col="robot_type",
-    hue="zone",
-    kind="scatter",
-    alpha=0.6,
-    height=4
-)
-```
-
-Interet:
-comparer rapidement les comportements par type de robot.
-
----
-
-## Approfondissement technique: detection d'erreurs
-
-4 niveaux complementaires:
-- niveau 1: seuil metier (ex: batterie < 15%)
-- niveau 2: comparaison au baseline (robot/zone/heure)
-- niveau 3: detection statistique (z-score, IQR, controle)
-- niveau 4: evaluation (precision, rappel, faux positifs)
-
-But:
-passer du "j'observe" a "je detecte automatiquement".
-
----
-
-## Exemple 6 — heatmap erreurs (heure x zone)
-
-```python
-err_heat = (
-    df.groupby(["zone", "hour"], as_index=False)["is_error"]
-      .mean()
-      .pivot(index="zone", columns="hour", values="is_error")
-      .fillna(0)
-)
-
-sns.heatmap(err_heat, cmap="Reds", vmin=0, vmax=1)
-plt.title("Taux d'erreur par zone et par heure")
-plt.xlabel("Heure")
-plt.ylabel("Zone")
-plt.tight_layout()
-plt.show()
-```
-
-Usage:
-isoler les couloirs et tranches horaires critiques.
-
----
-
-## Rendu — Heatmap erreurs zone x heure
-
-<img src="./assets/dataviz_robots/error_heatmap_zone_hour.png" alt="Heatmap erreurs zone heure" width="800" />
-
----
-
-## Exemple 7 — carte de controle (moyenne mobile + 3 sigma) 1/2
-
-```python
-ts = (
-    df.set_index("timestamp")
-      .resample("15min")["is_error"]
-      .mean()
-      .rename("error_rate")
-      .to_frame()
-)
-
-ts["mu_rolling"] = ts["error_rate"].rolling(16, min_periods=8).mean()
-ts["sigma_rolling"] = ts["error_rate"].rolling(16, min_periods=8).std()
-ts["upper"] = ts["mu_rolling"] + 3 * ts["sigma_rolling"]
-ts["is_alert"] = ts["error_rate"] > ts["upper"]
-```
-
----
-
-## Exemple 7 — carte de controle (moyenne mobile + 3 sigma) 2/2
-
-
-```python
-plt.plot(ts.index, ts["error_rate"], label="error_rate")
-plt.plot(ts.index, ts["mu_rolling"], label="moyenne mobile")
-plt.plot(ts.index, ts["upper"], "--", label="limite haute 3 sigma")
-plt.scatter(ts.index[ts["is_alert"]], ts.loc[ts["is_alert"], "error_rate"], c="red", s=20, label="alerte")
-plt.legend()
-plt.title("Detection d'anomalies temporelles sur le taux d'erreur")
-plt.tight_layout()
-plt.show()
-```
-
----
-
-## Rendu — Carte de controle
-
-<img src="./assets/dataviz_robots/control_chart_error_rate.png" alt="Carte de controle" width="800" />
-
----
-
-## Exemple 8 — score d'anomalie multivariable 1/2
-
-Variables:
-`downtime_s`, `mission_duration_s`, `battery_pct`, `temperature_c`.
-
-```python
-feat = ["downtime_s", "mission_duration_s", "battery_pct", "temperature_c"]
-z = (df[feat] - df[feat].mean()) / df[feat].std(ddof=0)
-df["anomaly_score"] = np.sqrt((z ** 2).sum(axis=1))
-
-threshold = df["anomaly_score"].quantile(0.99)
-df["is_anomaly"] = df["anomaly_score"] >= threshold
-```
-
----
-
-## Exemple 8 — score d'anomalie multivariable 2/2
-
-
-```python
-sns.scatterplot(
-    data=df,
-    x="mission_duration_s",
-    y="downtime_s",
-    hue="is_anomaly",
-    palette={False: "#1f77b4", True: "#d62728"},
-    alpha=0.6
-)
-plt.title("Points anormaux selon score multivariable")
-plt.tight_layout()
-plt.show()
-```
-
----
-
-## Rendu — Score d'anomalie
-
-<img src="./assets/dataviz_robots/anomaly_scatter.png" alt="Score anomalie" width="800" />
-
----
-
-## Exemple 9 — baseline par robot et ecart relatif
-
-```python
-baseline = (
-    df.groupby(["robot_id", "hour"], as_index=False)["downtime_s"]
-      .median()
-      .rename(columns={"downtime_s": "downtime_baseline"})
-)
-
-df2 = df.merge(baseline, on=["robot_id", "hour"], how="left")
-df2["downtime_ratio"] = df2["downtime_s"] / (df2["downtime_baseline"] + 1)
-```
-
-```python
-sns.boxplot(data=df2, x="robot_type", y="downtime_ratio")
-plt.axhline(2.0, ls="--", c="red")
-plt.title("Ecart au baseline de downtime (par type robot)")
-plt.ylabel("Ratio vs baseline")
-plt.tight_layout()
-plt.show()
-```
-
-Interpretation:
-ratio > 2 = comportement degrade vs historique comparable.
-
----
-
-## Rendu — Ecart au baseline
-
-<img src="./assets/dataviz_robots/baseline_ratio_boxplot.png" alt="Ecart baseline" width="800" />
-
----
-
-## Exemple 10 — matrice de confusion (si labels incidents)
-
-Si vous avez une verite terrain:
-- `incident_label` (0/1)
-- `pred_alert` (0/1) issue de la regle de detection
-
-```python
-cm = pd.crosstab(df["incident_label"], df["pred_alert"])
-cm = cm.reindex(index=[0, 1], columns=[0, 1], fill_value=0)
-
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
-plt.title("Matrice de confusion de la detection")
-plt.xlabel("Alerte predite")
-plt.ylabel("Incident reel")
-plt.tight_layout()
-plt.show()
-```
-
-Objectif:
-reduire les faux positifs sans rater les vrais incidents.
-
----
-
-## Rendu — Matrice de confusion
-
-<img src="./assets/dataviz_robots/confusion_matrix.png" alt="Matrice confusion" width="800" />
-
----
-
-## Atelier 1 (guide, 45 min)
-
-Produire 3 graphes:
-1. missions par heure
-2. erreurs par zone
-3. distribution downtime
-
-Contraintes:
-- titre utile
-- axes nommes + unite
-- 1 phrase d'insight par graphe
-
----
-
-## Atelier 2 (mini-projet, 75 min)
-
-Question imposee:
-"Pourquoi la productivite baisse entre 14h et 16h ?"
-
-Livrable:
-- 4 a 6 visualisations
-- au moins 1 graphique technique de detection d'anomalie
-- 1 slide de synthese:
-  - constat
-  - hypothese
-  - action recommandee
-
----
-
-## Evaluation (formative)
-
-- Qualite technique notebook: 30%
-- Qualite des visualisations: 40%
-- Lecture metier + recommandations: 30%
-
-Bonus:
-- reproductibilite (fonctions, cellules propres)
-- clarte narrative (ordre des graphes)
-
----
-
-## Checklist avant rendu
-
-- pas de valeurs aberrantes non traitees
-- pas de graphique surcharge
-- meme palette et meme echelle quand comparaison
-- message principal explicite dans chaque titre
-- conclusion orientee action
-
----
-
-## Conclusion
-
-Ce chapitre fait le lien entre:
-- base de donnees
-- analyse Python
-- prise de decision terrain
-
-Prochaine etape possible:
-industrialiser avec dashboard (`streamlit` / `dash`) et rafraichissement automatique.

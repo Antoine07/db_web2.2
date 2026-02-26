@@ -54,89 +54,26 @@ COMMIT;   -- valide
 
 ---
 
-## Exemple : pourquoi c'est indispensable (fil rouge `shop`)
-
-Cas classique :
-- créer une commande (`orders`)
-- ajouter des lignes (`order_items`)
-- décrémenter le stock (`products.stock`)
-
-Si une étape échoue, on ne veut **rien** garder.
-
----
-
-## Exemple SQL : créer une commande "atomique"
+# Exemple simple
 
 ```sql
 BEGIN;
 
-WITH new_order AS (
-  INSERT INTO orders (customer_id, status, ordered_at)
-  VALUES (1, 'pending', NOW())
-  RETURNING id
-),
-items AS (
-  SELECT *
-  FROM (
-    VALUES
-      (1, 2, 14.00::numeric), -- product_id, quantity, unit_price
-      (2, 1, 65.00::numeric)
-  ) AS v(product_id, quantity, unit_price)
-),
-inserted_items AS (
-  INSERT INTO order_items (order_id, product_id, quantity, unit_price)
-  SELECT new_order.id, items.product_id, items.quantity, items.unit_price
-  FROM new_order
-  CROSS JOIN items
-  RETURNING product_id, quantity
-)
-UPDATE products p
-SET stock = p.stock - inserted_items.quantity
-FROM inserted_items
-WHERE p.id = inserted_items.product_id;
+-- On insère une première ligne.
+INSERT INTO test_data (value) VALUES ('première valeur');
 
+-- On insère une deuxième ligne mais on change d’avis.
+SAVEPOINT avant_deuxieme;
+
+INSERT INTO test_data (value) VALUES ('deuxième valeur');
+
+-- Finalement, on regrette la deuxième insertion et on annule à partir du savepoint.
+ROLLBACK TO SAVEPOINT avant_deuxieme;
+
+-- On valide ce qui reste (donc seule la première insertion est gardée).
 COMMIT;
 ```
 
----
-
-## Démonstration d'échec : rollback
-
-Si une des requêtes échoue (ex : `product_id` inexistant → FK), alors :
-- la transaction passe en état "erreur"
-- on doit faire un `ROLLBACK` (sinon on ne peut plus rien exécuter dans cette transaction)
-
----
-
-```sql
-BEGIN;
-
-WITH new_order AS (
-  INSERT INTO orders (customer_id, status, ordered_at)
-  VALUES (1, 'pending', NOW())
-  RETURNING id
-)
-INSERT INTO order_items (order_id, product_id, quantity, unit_price)
-SELECT new_order.id, 999999, 1, 9.99
-FROM new_order;
-
--- la requête ci-dessus échoue => ROLLBACK obligatoire
-ROLLBACK;
-```
-
----
-
-## Savepoints (retour partiel)
-
-```sql
-BEGIN;
-
-SAVEPOINT step1;
--- ... requêtes
-
-ROLLBACK TO SAVEPOINT step1; -- annule uniquement depuis step1
-COMMIT;
-```
 
 ---
 
@@ -164,6 +101,16 @@ COMMIT;
 
 ---
 
+## Pourquoi c'est indispensable ?
+
+Cas classique :
+- créer une commande (`orders`)
+- ajouter des lignes (`order_items`)
+- décrémenter le stock (`products.stock`)
+
+Si une étape échoue, on ne veut **rien** garder.
+
+
 ## Concurrence : le piège du "lost update"
 
 Deux utilisateurs achètent en même temps le dernier produit :
@@ -175,26 +122,10 @@ Solution classique : verrouiller la ligne pendant la transaction.
 
 ---
 
-## `SELECT ... FOR UPDATE` (verrouiller une ligne)
+## Exemple de transaction
 
-```sql
-BEGIN;
-
--- verrouille la ligne produit jusqu'au COMMIT/ROLLBACK
-SELECT stock
-FROM products
-WHERE id = 10
-FOR UPDATE;
-
--- ensuite seulement, on modifie
-UPDATE products
-SET stock = stock - 1
-WHERE id = 10 AND stock > 0;
-
-COMMIT;
-```
-
-Remarque : le `WHERE stock > 0` est un "garde-fou" utile.
+`Examples/transaction_python.py` 
+[Dépôt](https://github.com/Antoine07/db))
 
 ---
 
