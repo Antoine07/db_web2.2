@@ -25,7 +25,7 @@ Objectif:
 Cas:
 flotte de robots logistiques en entrepot.
 
-Questions:
+On pourra se poser les questions suivantes et certainement y répondre en étudiant le Dataset:
 - Pourquoi la productivite baisse de 14h a 16h ?
 - Quelles zones causent le plus d'arrets ?
 - Quel lien entre temperature, batterie et erreurs ?
@@ -53,7 +53,7 @@ Chaque ligne représente :
 
 ---
 
-### Indicateurs opérationnels
+### Indicateurs opérationnels - champ de notre dataset
 
 - Durée mission : `mission_duration_s`
 - Temps d'arrêt : `downtime_s`
@@ -63,18 +63,11 @@ Chaque ligne représente :
 
 ---
 
-### Fiabilité
+### Fiabilité - champ de notre dataset
 
 - `error_code`
 - `mission_status`
 - `incident_label`
-
----
-
-## Type de dataset
-
-Logs événementiels horodatés
-→ Exploitables en analyse temporelle, performance et fiabilité.
 
 ---
 
@@ -86,19 +79,6 @@ Logs événementiels horodatés
 
 ---
 
-## Efficacité
-
-Exemple de `KPI` (Key Performance Indicator)
-
-```
-efficiency = mission_duration / (mission_duration + downtime)
-```
-
-- Robots les plus performants
-- Zones à friction
-
----
-
 ## Fiabilité
 
 - Taux d'erreur global
@@ -107,7 +87,7 @@ efficiency = mission_duration / (mission_duration + downtime)
 
 ---
 
-##  Potentiel analytique
+##  Une fois notre analyse réalisé on pourra 
 
 - Monitoring temps réel
 - Détection d'anomalies
@@ -175,12 +155,27 @@ df = pd.DataFrame({
     "timestamp": ["2025-01-01", "invalid_date"]
 })
 
-df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
+df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce") # NaT
 
 print(df)
 print(df.dtypes)
 
 ```
+
+---
+
+- Sans errors="coerce", pandas lance une exception si une valeur ne peut pas être convertie.
+
+```python
+s = pd.Series(["10", "20", "abc"])
+pd.to_numeric(s) # ValueError: Unable to parse string "abc" at position 2
+
+```
+
+- errors='coerce'
+- errors='raise' (lance une exception)
+
+---
 
 ## Application `to_numeric`
 
@@ -194,7 +189,7 @@ print(df.dtypes)
 # Types numériques attendus
 num_cols = ['mission_duration_s', 'downtime_s', 'battery_pct', 'speed_mps', 'temperature_c']
 for c in num_cols:
-    robots[c] = pd.to_numeric(df[c], errors='coerce')
+    robots[c] = pd.to_numeric(robots[c], errors='coerce')
 
 ```
 
@@ -207,10 +202,16 @@ for c in num_cols:
 robots = robots.drop_duplicates()
 
 # Conserver uniquement les missions dont la durée est strictement positive
-robots = robots[robots["mission_duration_s"] > 0]
+robots = robots[robots["duration"] > 0]
 
 # Conserver uniquement les pourcentages de batterie valides (entre 0 et 100 inclus)
-robots = robots[robots["battery_pct"].between(0, 100)]
+robots = robots[robots["battery_level"].between(0, 100)]
+
+robots["hour"] = robots["event_ts"].dt.hour
+robots["day"] = robots["event_ts"].dt.date
+robots["is_error"] = np.where(robots["error"].notna(), 1, 0)
+# Mesurer l'efficience 
+robots["efficiency"] = robots["duration"] / ( robots["downtime"] + robots["duration"] )
 ```
 
 ---
@@ -240,9 +241,8 @@ robots = robots.rename(columns={
 robots["hour"] = robots["event_ts"].dt.hour
 robots["day"] = robots["event_ts"].dt.date
 robots["is_error"] = np.where(robots["error"].notna(), 1, 0)
-# Pour ne pas diviser par zéro
-robots = robots[robots["downtime"] > 0]
-robots["efficiency"] = robots["duration"] / robots["downtime"]
+# Mesurer l'efficience 
+robots["efficiency"] = robots["duration"] / ( robots["downtime"] + robots["duration"] )
 ```
 
 ---
@@ -318,7 +318,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-> identifier creux/pics et les rapprocher du staffing.
+> identifier creux/pics et les rapprocher des missions des robots.
 
 ---
 
@@ -328,7 +328,7 @@ plt.show()
 
 ---
 
-## distribution batterie
+## Distribution batterie
 
 ```python
 sns.histplot(robots, x="battery_level", bins=20, kde=True, color="#1f77b4")
@@ -339,7 +339,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-si masse sous 20%, risque d'arret operationnel.
+si batterie sous 20%, risque d'arret operationnel.
 
 ---
 
@@ -367,7 +367,17 @@ si masse sous 20%, risque d'arret operationnel.
 
 ---
 
-# Bilan
+## Il y a environ 26% de robot chargés à 100%
+
+Cela peut vouloir dire:
+
+- Flotte en attente
+- Recharge récemment terminée
+- Faible activité opérationnelle
+
+---
+
+# Pour aller plus loin
 
 Les graphiques mettent en évidence une concentration non négligeable de batteries à 100 % (environ 23 % des missions).
 
@@ -404,6 +414,9 @@ robots["battery_bin"] = pd.cut(
     bins=[0, 20, 50, 80, 100],
     labels=["0-20%", "20-50%", "50-80%", "80-100%"]
 )
+
+# Visualiser les tranches qui permettent de regrouper les robots en fonction de leur charge
+robots[["battery_bin", "id", "battery_level"]]
 ```
 
 > Proposez un graphique permettant d'évaluer la relation entre le niveau de batterie et le taux d'erreur.
@@ -413,9 +426,9 @@ robots["battery_bin"] = pd.cut(
 # La solution
 
 ```python
-error_by_battery = (
-    robots.groupby("battery_bin", as_index=False)["is_error"]
-           .mean()
+
+error_by_battery = robots.groupby("battery_bin", as_index=False).agg(
+    is_error=("is_error", "mean"),
 )
 
 error_by_battery["is_error"] *= 100
@@ -465,7 +478,7 @@ Analyser la performance opérationnelle par zone.
 3. Représentez le résultat sous forme de barplot horizontal.
 4. Interprétez les zones les plus critiques.
 
-- La variable `is_error` est binaire (0 = pas d'erreur, 1 = erreur).
+- La variable `is_error` est binaire (0 = pas d'erreur, 1 = erreur, changé lors du nettoyage des données)
 - La moyenne d'une variable binaire correspond à un taux.
 
 ---
@@ -473,13 +486,11 @@ Analyser la performance opérationnelle par zone.
 ## Solution attendue
 
 ```python
-zone_err = (
-    robots.groupby("zone", as_index=False)["is_error"]
-      .mean()
-      .sort_values("is_error", ascending=False)
-)
+zone_err = robots.groupby("zone", as_index=False).agg(
+    is_error = ("is_error", "mean")
+).sort_values("is_error", ascending=False)
 
-sns.barplot(data=zone_err, x="is_error", y="zone", palette="Reds_r")
+sns.barplot(data=zone_err, x="zone", y="is_error", color="red")
 plt.title("Taux d'erreur moyen par zone")
 plt.xlabel("Taux d'erreur")
 plt.ylabel("Zone")
@@ -490,21 +501,21 @@ plt.show()
 
 ---
 
-## Rendu — Erreurs par zone
+## Erreurs par zone
 
 <img src="./assets/dataviz_robots/error_rate_by_zone.png" alt="Erreurs par zone" width="800" />
 
 ---
 
-##  boxplot mesurer la distribution
+## Lecture analytique concrète d'un boxplot
 
->Le boxplot montre comment les valeurs sont distribuées et permet de comparer des groupes en un coup d'œil.
+Un boxplot résume une distribution en 5 valeurs : minimum, Q1, médiane, Q3, maximum.
 
-Pour chaque classe :
-- La ligne au milieu → note médiane
-- La boîte → 50 % des notes
-- Les moustaches → dispersion globale
-- Les points isolés → valeurs extrêmes
+1. La **boîte (entre Q1 et Q3)** contient 50 % des données : elle représente le **comportement central et habituel** du système.
+1. La **ligne au centre** est la médiane : le niveau typique.
+1. Les **moustaches et points isolés** montrent les valeurs extrêmes ou atypiques.
+
+> La boîte décrit la situation statistiquement normale, les extrêmes signalent les cas particuliers.
 
 ---
 
@@ -520,6 +531,7 @@ Il permet d'identifier les outliers sans être trop sensible aux petites variati
 def upper_whisker(s):
     q1, q3 = s.quantile([0.25, 0.75])
     iqr = q3 - q1
+
     return q3 + 1.5 * iqr
 ```
 
@@ -548,6 +560,10 @@ s = pd.Series([10, 12, 13, 15, 18, 19, 20, 100])
 
 2. Déterminez la limite maximale parmi les types afin de fixer un seuil d'affichage cohérent.
 
+---
+
+# Exercice — Analyse de la variabilité du downtime 3/3
+
 3. Construisez un boxplot du downtime par type de robot :
    - en masquant les outliers,
    - en limitant l'axe vertical au cœur de la distribution.
@@ -557,25 +573,13 @@ s = pd.Series([10, 12, 13, 15, 18, 19, 20, 100])
    - la variabilité,
    - les différences entre types de robots.
 
----
-
-## Rappels Analyse de la variabilité du downtime 3/3
-
-- **La médiane** = ligne horizontale dans la boîte
-- **La variabilité** = hauteur de la boîte (IQR = Q3 − Q1)
-- **Les moustaches** = plage des valeurs normales
-- **Les outliers** = valeurs extrêmes (masquées ici pour la lisibilité)
-
 
 ---
 
-## Solution
+## Solution - `showfliers=False` retire les outliers
 
 ```python
-
-upper = robots.groupby("type")["downtime"].apply(upper_whisker).max()
 sns.boxplot(data=robots, x="type", y="downtime", showfliers=False)
-plt.ylim(0, upper * 1.05)
 plt.title("Distribution du downtime par type (coeur de distribution)")
 plt.xlabel("Type de robot")
 plt.ylabel("Downtime (s)")
@@ -587,22 +591,18 @@ La mediane = ligne dans la boite, la  variabilite = hauteur de la boite (IQR). L
 
 ---
 
-##Boxplot downtime par type
+## Boxplot downtime par type
 
 <img src="./assets/dataviz_robots/downtime_boxplot_by_robot_type.png" alt="Boxplot downtime par type de robot" width="800" />
 
 ---
 
-## Boxplot — lecture explicite 
+## Boxplot — Les outliers
 
-- boite: de `Q1` (25%) a `Q3` (75%)
-- ligne dans la boite: `mediane` (`Q2`)
-- `IQR = Q3 - Q1`
-- moustaches: dernier point dans `[Q1 - 1.5*IQR ; Q3 + 1.5*IQR]`
-- outliers: points hors moustaches
+Remarque: loc sert à sélectionner des lignes et/ou des colonnes par étiquette, généralement avec une condition logique.
 
 ```python
-s = df.loc[df["robot_type"] == "carrier", "downtime_s"]
+s = robots.loc[robots["type"] == "carrier", "downtime"]
 q1, q2, q3 = s.quantile([0.25, 0.50, 0.75])
 iqr = q3 - q1
 low, high = q1 - 1.5 * iqr, q3 + 1.5 * iqr
@@ -612,15 +612,119 @@ nb_outliers = ((s < low) | (s > high)).sum()
 Pratique conseillee:
 afficher le coeur de distribution dans le boxplot, et reporter `nb_outliers` a part.
 
-<img src="./assets/dataviz_robots/boxplot_reading_guide.png" alt="Guide de lecture boxplot" width="800" />
-
 ---
 
 ## Pourquoi autant d'outliers sur ce dataset ?
 
 1. La regle boxplot (`1.5 * IQR`) marque vite les queues longues.
-2. `downtime_s` est asymetrique: beaucoup de petites valeurs + quelques incidents longs.
-3. Le dataset simule des pics d'incidents (14h-16h, zone `C3`) pour la detection d'anomalies.
+2. `downtime` est asymetrique: beaucoup de petites valeurs + quelques incidents longs.
+3. Le dataset simule des pics d'incidents (14h-16h, zone `C3`) pour la detection d'anomalies, valeurs d'un seul coup importantes.
 
-Ordre de grandeur observe:
-- environ `241 / 5406` points (`4.46%`) classes outliers sur `downtime_s`.
+```txt
+|| || || || || || ||        |
+petits incidents         gros incident
+```
+
+---
+
+# Corrélations : principe et calcul
+
+> Mesurer l'intensité et le sens des relations entre variables quantitatives d'un dataset étudié.
+
+---
+
+## Coefficient de corrélation (Pearson)
+
+`r \in [-1 ; 1]`
+
+- **+1** → relation linéaire positive forte
+- **0** → absence de relation linéaire
+- **−1** → relation linéaire négative forte
+
+---
+
+# Exemple simple : dataset simulé
+
+
+```python
+
+np.random.seed(42)
+
+# Création d'un petit dataset simulé
+df = pd.DataFrame({
+    "marketing_spend": np.random.normal(100, 15, 100),
+})
+
+# Création de variables corrélées
+df["sales"] = df["marketing_spend"] * 2.5 + np.random.normal(0, 20, 100)
+df["customer_satisfaction"] = df["sales"] * 0.05 + np.random.normal(3, 0.5, 100)
+df["support_tickets"] = 200 - df["customer_satisfaction"] * 20 + np.random.normal(0, 5, 100)
+
+df.head()
+```
+
+Structure logique simulée :
+
+- Marketing → influence positive sur ventes
+- Ventes → influence positive sur satisfaction
+- Satisfaction → influence négative sur tickets support
+
+---
+
+## Calcul de la matrice de corrélation
+
+```python
+corr_matrix = df.corr(numeric_only=True)
+print(corr_matrix)
+```
+
+---
+
+##  Visualisation Heatmap
+
+```python
+
+plt.figure(figsize=(8, 6))
+
+sns.heatmap(
+    corr_matrix,
+    annot=True,
+    fmt=".2f",
+    cmap="coolwarm",
+    square=True,
+    linewidths=0.5
+)
+
+plt.title("Correlation Matrix Heatmap")
+plt.tight_layout()
+plt.show()
+```
+
+---
+
+## Rendu attendu
+
+![Image](https://seaborn.pydata.org/_images/structured_heatmap.png)
+
+
+---
+
+## Lecture attendue
+
+- `marketing_spend` ↔ `sales` → corrélation positive forte
+
+**Si marketing_spend augmente, sales augmente quasi proportionnellement.**
+
+- `sales` ↔ `customer_satisfaction` → positive modérée
+
+**Les ventes influencent la satisfaction, mais d'autres facteurs jouent également.**
+
+- `customer_satisfaction` ↔ `support_tickets` → négative forte
+
+**Une meilleure satisfaction réduit fortement la charge support.**
+
+```python
+sales = marketing_spend * 2.5 + bruit
+customer_satisfaction = sales * 0.05 + bruit
+support_tickets = 200 - customer_satisfaction * 20 + bruit
+```
