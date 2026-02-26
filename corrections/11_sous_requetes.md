@@ -117,13 +117,17 @@ WHERE t.total > (
   ) AS t2
 )
 ORDER BY t.total DESC;
+
 ```
 
-## Exercice 8 — Client(s) qui a(ont) le plus dépensé (max via sous-requête)
+## Exercice 8 — Client(s) qui a(ont) le plus dépensé (max via sous-requête) (***)
 
 Énoncé : sur les commandes `paid` uniquement, retourner le(s) client(s) qui a(ont) dépensé le plus au total :
 - `email`
 - `total_paid`
+
+
+Remarque `SELECT COALESCE(1, 0)` retourne 1 ici et sinon 0 dans l'exemple suivant: `SELECT COALESCE(NULL, 0)`
 
 ```sql
 SELECT totals.email, totals.total_paid
