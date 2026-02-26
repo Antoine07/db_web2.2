@@ -2,8 +2,8 @@
 marp: true
 title: "SQL + Python — 14. Dataviz robots"
 paginate: true
-header: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
-footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
+header: "[← Index des chapitres](https://antoine07.github.io/db_web2.2)"
+footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2)"
 ---
 
 # 14 — Dataviz robots avec Python
@@ -17,6 +17,17 @@ footer: "[← Index des chapitres](https://antoine07.github.io/db_web2.2/#5)"
 
 Objectif:
 `question metier -> graphique lisible -> action`
+
+---
+
+## Plan des chapitres abordés
+
+1. Nature et structure des données robots
+2. Nettoyage et préparation pour la dataviz
+3. Visualisations descriptives (barplot, distribution, boxplot)
+4. Analyse opérationnelle par zone et par type
+5. Corrélations et lecture d'une heatmap
+6. Exercice final de synthèse
 
 ---
 
@@ -87,12 +98,12 @@ Chaque ligne représente :
 
 ---
 
-##  Une fois notre analyse réalisé on pourra 
+## Perspectives (suite du cours)
 
-- Monitoring temps réel
-- Détection d'anomalies
-- Maintenance prédictive
-- Optimisation des opérations
+- Mettre en place un monitoring temps réel
+- Implémenter une détection d'anomalies
+- Construire une approche de maintenance prédictive
+- Piloter l'optimisation des opérations
 
 ---
 
@@ -629,6 +640,19 @@ petits incidents         gros incident
 
 # Corrélations : principe et calcul
 
+---
+
+## Plan du chapitre corrélations
+
+1. Comprendre le coefficient de Pearson
+2. Construire un dataset simulé cohérent
+3. Calculer la matrice de corrélation
+4. Visualiser la matrice avec une heatmap
+5. Interpréter les relations utiles métier
+6. Réaliser un exercice final de synthèse
+
+---
+
 > Mesurer l'intensité et le sens des relations entre variables quantitatives d'un dataset étudié.
 
 ---
@@ -662,6 +686,8 @@ df["support_tickets"] = 200 - df["customer_satisfaction"] * 20 + np.random.norma
 
 df.head()
 ```
+
+---
 
 Structure logique simulée :
 
@@ -704,8 +730,7 @@ plt.show()
 
 ## Rendu attendu
 
-![Image](https://seaborn.pydata.org/_images/structured_heatmap.png)
-
+<img src="./assets/dataviz_robots/simulated_correlation_heatmap.svg" alt="Heatmap de corrélation" width="600" />
 
 ---
 
@@ -728,3 +753,26 @@ sales = marketing_spend * 2.5 + bruit
 customer_satisfaction = sales * 0.05 + bruit
 support_tickets = 200 - customer_satisfaction * 20 + bruit
 ```
+
+---
+
+## Exercice final — Corrélations (synthèse)
+
+### Consigne
+
+1. Reprenez le `df` simulé de ce chapitre.
+2. Ajoutez deux variables:
+   - `discount_rate = 50 - sales * 0.08 + bruit`
+   - `returns = 30 - customer_satisfaction * 2 + bruit`
+3. Calculez la nouvelle matrice de corrélation.
+4. Produisez une heatmap annotée (`vmin=-1`, `vmax=1`).
+5. Rédigez 4 lignes d'interprétation métier.
+
+---
+
+## Critères de réussite
+
+- Le code génère une matrice lisible et correcte.
+- Au moins 2 corrélations fortes sont identifiées.
+- L'interprétation précise bien: corrélation != causalité.
+- Une recommandation opérationnelle concrète est proposée.
